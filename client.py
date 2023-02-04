@@ -1,8 +1,24 @@
+import requests
 import socketio
 
-sio = socketio.Client()
+API_URL = "http://127.0.0.1:5000"
+session = requests.Session()
 
-sio.connect('http://localhost:5000')
+print("enter username: ")
+username = input()
+
+response = session.get(url=API_URL)
+print(response.text)
+
+response = session.post(url=f"{API_URL}/login/{username}")
+print(response.text)
+
+response = session.get(url=API_URL)
+print(response.text)
+
+sio = socketio.Client(http_session=session)
+
+sio.connect(API_URL)
 
 @sio.on('receive')
 def receiver(data):
@@ -18,3 +34,9 @@ while message != "x":
     sio.emit('message', message)
 
 sio.disconnect()
+
+response = session.post(url=f"{API_URL}/logout")
+print(response.text)
+
+response = session.get(url=API_URL)
+print(response.text)

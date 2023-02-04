@@ -4,21 +4,23 @@
 
 #### Login via http get request
 
-localhost:5000/login/<name>
+localhost:5000/login/<username>
 
-adds name to and displays users list
+logs in user (creates a session)
 
 #### Logout via http get request
 
-localhost:5000/logout/<name>
+localhost:5000/logout/<username>
 
-removes name from and displays users list
+logs out user
 
 #### Persistent connection via SocketIO
 
 processes text events labeled "message", prints to console, and rebroacasts the message as a "receive" event to all connected clients
 
 ### Client
+
+Prompts user for "username", logs them in via session
 
 Connects to localhost:5000 via SocketIO
 
