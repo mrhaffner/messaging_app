@@ -1,7 +1,5 @@
 ## Proof of Concept
 
-Server:
-
 ### Server Routes
 
 #### Login via http get request
