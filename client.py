@@ -24,14 +24,20 @@ sio.connect(API_URL)
 def receiver(data):
     print(data)
 
-print("enter message(\"x\" to quit): ")
+print("enter message(\"x\" to quit, \"list\" to list users): ")
 message = input()
-sio.emit('message', message)
+if message == "list":
+    print(session.get(url=f"{API_URL}/list-users").text)
+elif message != "x":
+    sio.emit('message', message)
 
 while message != "x":
-    print("enter message(\"x\" to quit): ")
+    print("enter message(\"x\" to quit, \"list\" to list users): ")
     message = input()
-    sio.emit('message', message)
+    if message == "list":
+        print(session.get(url=f"{API_URL}/list-users").text)
+    elif message != "x":
+        sio.emit('message', message)
 
 sio.disconnect()
 

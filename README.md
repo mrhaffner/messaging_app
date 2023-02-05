@@ -14,6 +14,10 @@ localhost:5000/logout/<username>
 
 logs out user
 
+#### Get list of logged in users via http get request (should be handled via websockets real time)
+
+localhost:5000/list-users
+
 #### Persistent connection via SocketIO
 
 processes text events labeled "message", prints to console, and rebroacasts the message as a "receive" event to all connected clients
