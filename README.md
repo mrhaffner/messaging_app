@@ -1,5 +1,3 @@
-## Proof of Concept
-
 ### Server Routes
 
 #### Login via http get request
@@ -15,6 +13,14 @@ localhost:5000/logout/<username>
 logs out user
 
 #### SocketIO events
+
+"message" event
+
+handles emitting/receiving messages
+
+"user_change" event
+
+handles emitting/receiving changes to the active user list
 
 ## Set Up
 
@@ -47,9 +53,7 @@ Run as many clients as you'd like (from its folder):
 $ python client.py
 ```
 
-## Proposed Feature List
-
-### Core Functionalities
+## Feature List
 
 - Message a single user
   - Handled via SocketIO
