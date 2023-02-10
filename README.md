@@ -14,23 +14,7 @@ localhost:5000/logout/<username>
 
 logs out user
 
-#### Get list of logged in users via http get request (should be handled via websockets real time)
-
-localhost:5000/list-users
-
-#### Persistent connection via SocketIO
-
-processes text events labeled "message", prints to console, and rebroacasts the message as a "receive" event to all connected clients
-
-### Client
-
-Prompts user for "username", logs them in via session
-
-Connects to localhost:5000 via SocketIO
-
-Prints "receive" events to console
-
-Will take message input via console and emit "message" event to server until "x" is entered into console.
+#### SocketIO events
 
 ## Set Up
 
@@ -51,13 +35,13 @@ Install the required packages
 $ pip install -r requirements.txt
 ```
 
-Run the server:
+Run the server (from its folder):
 
 ```sh
 $ python server.py
 ```
 
-Run as many clients as you'd like:
+Run as many clients as you'd like (from its folder):
 
 ```sh
 $ python client.py
@@ -68,27 +52,37 @@ $ python client.py
 ### Core Functionalities
 
 - Message a single user
-  - Handled via websockets
-  - Emits only to specific user (handled via SocketIO "rooms"?)
+  - Handled via SocketIO
+  - Emits only to specific user/sender ("rooms"?)
   - Shows who message is from
-  - Returns error if user offline
-  - Message is shown in group chat window prepended from (from_user_name) or in individual window?
-  - Uses information (from_user, to_user, message_id (auto-increment), message_text, timestamp)
+  - Message is shown in group chat window for receiver
+  - Message is optimistically shown for sender
+    - When the sender receives the message back, they know it was a success (do not re-add it to their list)
+    - If they do not receive a response after a certain time or are disconnected, mark the message as not sent (maybe change text color)
+    - Returns error if user does not exist (mark red)
+  - Uses information (sender, receiver, message_id (auto-incremented on server), message_text)
   - Messages are not persistent
 - Send message to group
-  - Handled via websockets
-  - Uses information (from_user, message_id (auto-increment), message_text, timestamp)
+  - Handled via SocketIO
+  - Uses information (sender, receiver [marked as "group"], message_id (auto-incremented on server), message_text)
   - Appears in group chat window
-  - Only appears in message window for sender once emitted from backend (otherwise show an error) or is optimistically added with an error appearing on send failure (front-end filter duplicate message IDs? since it is emitted back from back end?)?
-  - Messages are not persistent
+  - Message is shown in group chat window for receiver
+    - Message is optimistically shown for sender
+      - When the sender receives the message back, they know it was a success (do not re-add it to their list)
+      - If they do not receive a response after a certain time or are disconnected, mark the message as not sent (maybe change text color)
+    - Messages are not persistent
 - Login via https
-  - Oauth?
-  - There is no registration, users use google account
-  - Last how long?
-  - Cannot only connect via websockets after authentication?
+  - Currently a user will login simply by submitting their username and password (password is ignored for now)
+  - Users currently are non-persistent
+  - Cannot login with username that already is logged in
+  - Cannot only connect via SocketIO after creating a valid login session
+  - Future features
+    - Oauth?
+    - There is no registration, users use google account
+    - Last how long?
 - Logout vias https
 - Display list of active users
-  - Handled via websockets
-  - Active users appear when they connect via websockets
+  - Handled via SocketIO
+  - Active users appear when they connect via SocketIO
   - Users dissapear when they logout
-  - Users dissapear when their websocket connection ends after a certain grace period
+  - Users dissapear when their SocketIO connection ends after a certain grace period
