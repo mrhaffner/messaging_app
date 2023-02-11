@@ -1,4 +1,5 @@
 # used for sharing data with server
+# maybe add a serialization thing to Message instead?
 class MessageDTO:
     pass
 
