@@ -1,7 +1,7 @@
 import tkinter as tk
 
 # displays the other items in this file
-class ChatView(tk.Frame):
+class MainWindow(tk.Frame):
     pass
 
 
@@ -13,7 +13,7 @@ class MessageBar(tk.Frame):
 
 
 # displays a list of all users currently online that aren't you
-class UsersList(tk.Frame):
+class ActiveUsers(tk.Frame):
     pass
 
 
