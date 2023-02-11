@@ -14,13 +14,24 @@ logs out user
 
 #### SocketIO events
 
-"message" event
+(it might not be necessary to seperate these into out/in)
+(investigating, will report back)
 
-handles emitting/receiving messages
+"message_out" event
 
-"user_change" event
+handles emitting/receiving messages from clients to server
 
-handles emitting/receiving changes to the active user list
+"message_in" event
+
+handles emitting/receiving messages from server to client
+
+"user_change_out" event
+
+handles emitting/receiving changes to the active user list from clients to server
+
+"user_change_in" event
+
+handles emitting/receiving changes to the active user list from server to client
 
 ## Set Up
 
