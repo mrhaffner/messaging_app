@@ -25,13 +25,9 @@ handles emitting/receiving messages from clients to server
 
 handles emitting/receiving messages from server to client
 
-"user_change_out" event
+"user_change" event
 
-handles emitting/receiving changes to the active user list from clients to server
-
-"user_change_in" event
-
-handles emitting/receiving changes to the active user list from server to client
+handles emitting changes to the active user list from server to client
 
 ## Set Up
 

@@ -3,6 +3,7 @@ class MessageDTO:
     pass
 
 
+# needs an attribute to indicate if send failed/waiting for response
 class Message:
     pass
 

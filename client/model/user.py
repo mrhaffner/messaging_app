@@ -9,7 +9,9 @@ class User:
 
 # represents the current user
 # needs an option for when there is none
+# needs to contain auth information probably
 # implements observer aka pub/sub pattern with view
+# is a singleton
 class CurrentUser:
     pass
 
