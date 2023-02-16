@@ -30,10 +30,6 @@ class UserList(metaclass=SingletonMeta):
     def add_from_dto(self, user_dto):
         self.add(User.from_dto(user_dto))
 
-    # def add_many_from_dtos(self, user_dtos):
-    #     for user_dto in user_dtos:
-    #         self.add_from_dto(user_dto)
-
     def remove(self, user):
         self.users.discard(user)
 
