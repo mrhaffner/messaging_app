@@ -1,6 +1,6 @@
 import json
-from dataclasses import asdict, dataclass
 
+from dataclasses import asdict, dataclass
 from shared import SingletonMeta
 
 
@@ -20,21 +20,25 @@ class User:
 # code reuse ?
 class UserList(metaclass=SingletonMeta):
 
-    users = set()
+    def __init__(self):
+        self._users = set()
 
     def add(self, user):
         if self.exists(user):
             raise ValueError("User already exists")
-        self.users.add(user)
+        self._users.add(user)
 
     def add_from_dto(self, user_dto):
         self.add(User.from_dto(user_dto))
 
     def remove(self, user):
-        self.users.discard(user)
+        self._users.discard(user)
 
     def exists(self, user):
-        return user in self.users
+        return user in self._users
 
     def get_all(self):
-        return list(self.users)
+        return list(self._users)
+
+    def to_dto(self):
+        return [user.to_dto() for user in self._users]
