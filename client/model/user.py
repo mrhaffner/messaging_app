@@ -1,7 +1,7 @@
 import json
 from dataclasses import asdict, dataclass
 
-from shared import SingletonMeta
+from shared import Publisher, SingletonMeta
 
 
 @dataclass(frozen=True)
@@ -18,30 +18,36 @@ class User:
 
 
 # code reuse ?
-class UserList(metaclass=SingletonMeta):
+class UserList(Publisher, metaclass=SingletonMeta):
 
-    users = set()
+    def __init__(self):
+        super().__init__()
+        _users = set()
 
     def add(self, user):
         if self.exists(user):
             raise ValueError("User already exists")
-        self.users.add(user)
+        self._users.add(user)
+        super().publish()
 
     def add_from_dto(self, user_dto):
         self.add(User.from_dto(user_dto))
+        super().publish()
 
     def add_many_from_dtos(self, user_dtos):
         for user_dto in user_dtos:
             self.add_from_dto(user_dto)
+        super().publish()
 
     def remove(self, user):
-        self.users.discard(user)
+        self._users.discard(user)
+        super().publish()
 
     def exists(self, user):
-        return user in self.users
+        return user in self._users
 
     def get_all(self):
-        return list(self.users)
+        return list(self._users)
 
 
 # represents the current user
@@ -49,9 +55,10 @@ class UserList(metaclass=SingletonMeta):
 # needs to contain auth information probably
 # implements observer aka pub/sub pattern with view
 # is a singleton
-class CurrentUser(metaclass=SingletonMeta):
-    
+class CurrentUser(Publisher, metaclass=SingletonMeta):
+
     def __init__(self):
+        super().__init__()
         self._user = None
         self._session = None
 
@@ -60,16 +67,17 @@ class CurrentUser(metaclass=SingletonMeta):
 
     def remove(self):
         self._user = None
+        super().publish()
 
     def add(self, user, session):
         self._user = user
         self._session = session
+        super().publish()
 
     @property
-    def name(self):
-        self._user.name
+    def user(self):
+        self._user
 
     @property
     def session(self):
         self._session
-

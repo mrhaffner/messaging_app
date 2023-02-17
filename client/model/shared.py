@@ -18,3 +18,16 @@ class SingletonMeta(type):
             instance = super().__call__(*args, **kwargs)
             cls._instances[cls] = instance
         return cls._instances[cls]
+
+
+class Publisher:
+
+    def __init__(self):
+        self._subscribers = {}
+
+    def subscribe(self, subscriber):
+        self._subscribers.add(subsciber)
+
+    def publish(self):
+        for subscriber in self._subscribers:
+            subscriber.publish(self)
