@@ -31,7 +31,7 @@ handles emitting changes to the active user list from server to client
 
 ## Set Up
 
-#### For Windows
+### For Windows
 Install Python and add to Path (author is using 3.9)
 
 Create/activate a virtual environment so you are not installing packages globally:
@@ -59,7 +59,7 @@ Run as many clients as you'd like (from its folder):
 $ python client.py
 ```
 
-#### For Linux/Mac
+### For Linux/Mac
 
 Install Python and add to Path (author is using 3.9)
 
