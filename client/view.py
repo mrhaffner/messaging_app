@@ -28,8 +28,8 @@ class ChatView(tk.Tk):
         parent.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        self.HomePage = ChatPage
-        self.LogInFrame = LogInPage
+        self.ChatPage = ChatPage
+        self.LogInPage = LogInPage
 
         for F in (ChatPage, LogInPage):
             frame = F(self, parent)
