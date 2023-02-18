@@ -25,25 +25,25 @@ class ChatView(tk.Tk):
         # icon = ImageTk.PhotoImage(icon)
         # self.iconphoto(False, icon)
 
-        # container will be the top-level widget in the application, which can hold and manage other widgets.
-        container = tk.Frame(self)
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
+        # parent will be the top-level widget in the application, which can hold and manage other widgets.
+        parent = tk.Frame(self)
+        parent.pack(side="top", fill="both", expand=True)
+        parent.grid_rowconfigure(0, weight=1)
+        parent.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
         self.HomePage = HomePage
         self.LogInFrame = LogInFrame
 
         for F in (HomePage, LogInFrame):
-            frame = F(self, container)
+            frame = F(self, parent)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame(HomePage)
 
-    def show_frame(self, container):
-        frame = self.frames[container]
+    def show_frame(self, frame):
+        frame = self.frames[frame]
         menubar = frame.create_menubar(self)
         self.configure(menu=menubar)
         frame.tkraise()
