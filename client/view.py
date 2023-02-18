@@ -225,7 +225,3 @@ class LogInPage(ttk.Frame):
         help_menu.add_separator()
 
         return 
-
-if __name__ == '__main__':
-    app = ChatView()
-    app.mainloop()
