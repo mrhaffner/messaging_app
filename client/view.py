@@ -33,9 +33,9 @@ class ChatView(tk.Tk):
 
         self.frames = {}
         self.HomePage = HomePage
-        self.LogInFrame = LogInFrame
+        self.LogInFrame = LogInPage
 
-        for F in (HomePage, LogInFrame):
+        for F in (HomePage, LogInPage):
             frame = F(self, parent)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -198,7 +198,7 @@ class HomePage(ttk.Frame):
 
         return menubar
 
-class LogInFrame(ttk.Frame):
+class LogInPage(ttk.Frame):
     def __init__(self, parent, container):
         super().__init__(container)
 
