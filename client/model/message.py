@@ -45,4 +45,4 @@ class MessageList(Publisher, metaclass=SingletonMeta):
         super().publish()
 
     def get_all(self):
-        return self._messagex
+        return self._message
