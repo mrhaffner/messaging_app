@@ -28,15 +28,15 @@ class ChatView(tk.Tk):
         parent.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        self.HomePage = HomePage
+        self.HomePage = ChatPage
         self.LogInFrame = LogInPage
 
-        for F in (HomePage, LogInPage):
+        for F in (ChatPage, LogInPage):
             frame = F(self, parent)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame(HomePage)
+        self.show_frame(ChatPage)
 
     def show_frame(self, frame):
         frame = self.frames[frame]
@@ -44,7 +44,7 @@ class ChatView(tk.Tk):
         self.configure(menu=menubar)
         frame.tkraise()
 
-class HomePage(ttk.Frame):
+class ChatPage(ttk.Frame):
     def __init__(self, parent, container):
         super().__init__(container)
         self.parent = parent
