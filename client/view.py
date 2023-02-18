@@ -169,14 +169,14 @@ class ChatPage(ttk.Frame):
         # Creates Menu widget
         menubar = tk.Menu(parent, bd=3, relief=RAISED, activebackground="#80B9DC")
 
-        # creates Filemenu
-        filemenu = tk.Menu(menubar, tearoff=0, relief=RAISED, activebackground="#026AA9")
-        menubar.add_cascade(label="File", menu=filemenu)
-        filemenu.add_command(label="NextFrame", command=lambda: parent.show_frame(parent.LogInFrame))
-        filemenu.add_command(label="Home", command=lambda: parent.show_frame(parent.HomePage))
-        filemenu.add_command(label="Close", command=lambda: parent.show_frame(parent.HomePage))
-        filemenu.add_separator()
-        filemenu.add_command(label="Exit", command=parent.quit)  
+        # creates settings menu
+        settings_menu = tk.Menu(menubar, tearoff=0, relief=RAISED, activebackground="#026AA9")
+        menubar.add_cascade(label="File", menu=settings_menu)
+        settings_menu.add_command(label="NextFrame", command=lambda: parent.show_frame(parent.LogInPage))
+        settings_menu.add_command(label="Home", command=lambda: parent.show_frame(parent.ChatPage))
+        settings_menu.add_command(label="Close", command=lambda: parent.show_frame(parent.ChatPage))
+        settings_menu.add_separator()
+        settings_menu.add_command(label="Exit", command=parent.quit)  
 
         # creates proccessing menu
         processing_menu = tk.Menu(menubar, tearoff=0)
@@ -207,8 +207,9 @@ class LogInPage(ttk.Frame):
         # creates a settings menu
         settings_menu = Menu(menubar, tearoff=0, relief=RAISED, activebackground="#026AA9")
         menubar.add_cascade(label="Settings", menu=settings_menu)
-        settings_menu.add_command(label="New Project", command=lambda: parent.show_frame(parent.LogInFrame))
-        settings_menu.add_command(label="Close", command=lambda: parent.show_frame(parent.HomePage))
+        settings_menu.add_command(label="NextFrame", command=lambda: parent.show_frame(parent.LogInPage))
+        settings_menu.add_command(label="Home", command=lambda: parent.show_frame(parent.ChatPage))
+        settings_menu.add_command(label="Close", command=lambda: parent.show_frame(parent.ChatPage))
         settings_menu.add_separator()
         settings_menu.add_command(label="Exit", command=parent.quit)  
 
