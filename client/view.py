@@ -162,7 +162,7 @@ class HomePage(ttk.Frame):
             return
 
         if message:
-            # Enable the chatbox and insert the message
+            # Enable the chatbox to insert the message
             self.scrolled_text_chatbox.config(state='normal')
             # Add message to chatbox
             self.scrolled_text_chatbox.insert(tk.END, f"{message}\n")
