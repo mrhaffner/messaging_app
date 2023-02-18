@@ -21,7 +21,12 @@ class SingletonMeta(type):
 
 
 class Publisher:
-
+    """
+    This is class is the Publisher in the Pub Sub pattern
+    aka the Observable in the Observer pattern
+    Use the subscribe() method to observe this object for changes
+    Subscribers must implement the publish() method to receive updates
+    """
     def __init__(self):
         self._subscribers = {}
 
