@@ -21,10 +21,6 @@ class ChatView(tk.Tk):
         self.geometry("720x550")
         self.resizable(True, True)
 
-        # icon = Image.open('/resources/mail_icon.png')
-        # icon = ImageTk.PhotoImage(icon)
-        # self.iconphoto(False, icon)
-
         # parent will be the top-level widget in the application, which can hold and manage other widgets.
         parent = tk.Frame(self)
         parent.pack(side="top", fill="both", expand=True)
@@ -56,7 +52,6 @@ class HomePage(ttk.Frame):
         # Constants
         self.ENTER_TEXT_HERE = "Enter text here..."
 
-
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   STYLING   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -78,7 +73,6 @@ class HomePage(ttk.Frame):
         
         # Create dropdown menu for selecting a user
         self.user_var = tk.StringVar(self)
-        #self.user_var.set(users[0])
         self.user_dropdown = ttk.Combobox(self, textvariable=self.user_var, values=users)
         self.user_dropdown.current(0)
 
