@@ -23,7 +23,7 @@ def login(username):
 # maybe ends the user session?
 @app.route("/logout", methods=['POST'])
 def logout():
-    users.discard(session["username"])
+    users.remove(session["username"])
     session.pop("username", None)
     emit('user_change', users.to_dto())
 
