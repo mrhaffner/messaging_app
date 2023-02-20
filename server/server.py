@@ -1,4 +1,4 @@
-from flask import Flask, session
+from flask import Flask, request, session
 from flask_socketio import SocketIO, emit
 from server.model import UserList, UserDTO, User, MessageDTO, Message
 import json
@@ -12,18 +12,19 @@ msg = Message()
 # login route - http POST
 # create a user session which will allow one to connect via websockets
 # change to json
-@app.route("/login/<username>", methods=['POST'])
-def login(username):
-    session['username'] = username
-    users.add(username)
+@app.route("/login", methods=['POST'])
+def login():
+    data = request.json
+    # hopefully works - test
+    session['username'] = data.user.name
+    return f'logged in as {session["username"]}'
 
 
 # logout route - http POST
 # emits to "user_change" event
-# maybe ends the user session?
 @app.route("/logout", methods=['POST'])
 def logout():
-    users.remove(session["username"])
+    users.remove_by_username(session["username"])
     session.pop("username", None)
     emit('user_change', users.to_dto())
 
@@ -37,14 +38,11 @@ def logout():
 
 @socketio.on('message_out')
 def messageout(sender, receiver):
-    if receiver == "group":
+    if User.from_dto(receiver).name == "group":
         emit("message_out", msg.to_dto())
     else:
-        # not required but check if user is real?
-        for user in users.get_all():
-            if user == receiver:
-                sender.emit('message_out', msg.to_dto())
-                user.emit('message_out', msg.to_dto())
+        emit('message_out', msg.to_dto(), namespace=User.from_dto(sender).name)
+        emit('message_out', msg.to_dto(), namespace=User.from_dto(receiver).name)
         
     
 
@@ -53,19 +51,20 @@ def messageout(sender, receiver):
 #maybe?
 @socketio.on('disconnect')
 def disconnect():
+    users.remove_by_username(session["username"])
+    session.pop("username", None)
     emit('user_change', users.to_dto())
 
 
 # needs to handle when a user first connects via SocketIO
-# emits to "user_change" event but ONLY for that user
+# emits to "user_change" event for all users
 # cannot connect if does not have a session gained from login route
 @socketio.on('connect')
-def connect(user):
-    if users.exist(user):
-        user.emit('user_change', users.to_dto())
+def connect():
+    if request.namespace in session:
+        emit('user_change', users.to_dto())
     else:
-        # refuse connection
-        pass
+        return False
     
 
 def main():
