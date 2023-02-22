@@ -31,7 +31,35 @@ handles emitting changes to the active user list from server to client
 
 ## Set Up
 
-(This is for linux/mac, if you are using Windows you are on your own)
+### For Windows
+Install Python and add to Path (author is using 3.9)
+
+Create/activate a virtual environment so you are not installing packages globally:
+
+```sh
+$ py -m venv env
+$ source env/Scripts/activate
+```
+
+Install the required packages
+
+```sh
+$ pip install -r requirements.txt
+```
+
+Run the server (from its folder):
+
+```sh
+$ python server.py
+```
+
+Run as many clients as you'd like (from its folder):
+
+```sh
+$ python client.py
+```
+
+### For Linux/Mac
 
 Install Python and add to Path (author is using 3.9)
 
