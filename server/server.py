@@ -1,17 +1,16 @@
 from flask import Flask, request, session
 from flask_socketio import SocketIO, emit
 from server.model import UserList, UserDTO, User, MessageDTO, Message
-import json
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 socketio = SocketIO(app)
 users = UserList()
 msg = Message()
+user = User()
 
 # login route - http POST
 # create a user session which will allow one to connect via websockets
-# change to json
 @app.route("/login", methods=['POST'])
 def login():
     data = request.json
@@ -38,11 +37,11 @@ def logout():
 
 @socketio.on('message_out')
 def messageout(sender, receiver):
-    if User.from_dto(receiver).name == "group":
+    if user.from_dto(receiver).name == "group":
         emit("message_out", msg.to_dto())
     else:
-        emit('message_out', msg.to_dto(), namespace=User.from_dto(sender).name)
-        emit('message_out', msg.to_dto(), namespace=User.from_dto(receiver).name)
+        emit('message_out', msg.to_dto(), namespace=user.from_dto(sender).name)
+        emit('message_out', msg.to_dto(), namespace=user.from_dto(receiver).name)
         
     
 
