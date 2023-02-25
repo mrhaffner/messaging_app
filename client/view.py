@@ -11,11 +11,22 @@
 import tkinter as tk
 from component.main_window import ChatPage
 from component.login_popup import LoginPopup
+from model.user import CurrentUser, UserList
+from model.message import MessageList
 
 class ChatView(tk.Tk):
 
     def __init__(self):
         super().__init__()
+
+        self.user_list = UserList()
+        self.current_user = CurrentUser()
+        self.message_list = MessageList()
+
+        self.user_list.subscribe('''pass in something''') 
+        self.current_user.subscribe('''pass in something''')
+        self.message_list.subscribe('''pass in something''')
+
         self.title("Messaging Application")
         self.geometry("720x550")
         self.resizable(True, True)
@@ -36,6 +47,9 @@ class ChatView(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame(LoginPopup)
+    
+    def publish():
+        pass
 
     def show_frame(self, frame):
         frame = self.frames[frame]
