@@ -6,17 +6,15 @@ from model.user import UserList, User
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 socketio = SocketIO(app)
-users = UserList()
-msg = Message()
-user = User()
+
 
 # login route - http POST
-# create a user session which will allow one to connect via websockets
+# create a User session which will allow one to connect via websockets
 @app.route("/login", methods=['POST'])
 def login():
     data = request.json
     # hopefully works - test
-    session['username'] = data.user.name
+    session['username'] = data.User.name
     return f'logged in as {session["username"]}'
 
 
@@ -24,9 +22,9 @@ def login():
 # emits to "user_change" event
 @app.route("/logout", methods=['POST'])
 def logout():
-    users.remove_by_username(session["username"])
+    UserList.remove_by_username(session["username"])
     session.pop("username", None)
-    emit('user_change', users.to_dto())
+    emit('user_change', UserList.to_dto())
 
 
 
@@ -38,31 +36,31 @@ def logout():
 
 @socketio.on('message_out')
 def messageout(sender, receiver):
-    if user.from_dto(receiver).name == "group":
-        emit("message_out", msg.to_dto())
+    if User.from_dto(receiver).name == "group":
+        emit("message_out", Message.to_dto())
     else:
-        emit('message_out', msg.to_dto(), namespace=user.from_dto(sender).name)
-        emit('message_out', msg.to_dto(), namespace=user.from_dto(receiver).name)
+        emit('message_out', Message.to_dto(), namespace=User.from_dto(sender).name)
+        emit('message_out', Message.to_dto(), namespace=User.from_dto(receiver).name)
         
     
 
-# needs to handle when a user disconnects from SocketIO (seperate from logout)
+# needs to handle when a User disconnects from SocketIO (seperate from logout)
 # emits to "user_change" event
 #maybe?
 @socketio.on('disconnect')
 def disconnect():
-    users.remove_by_username(session["username"])
+    UserList.remove_by_username(session["username"])
     session.pop("username", None)
-    emit('user_change', users.to_dto())
+    emit('user_change', UserList.to_dto())
 
 
-# needs to handle when a user first connects via SocketIO
-# emits to "user_change" event for all users
+# needs to handle when a User first connects via SocketIO
+# emits to "user_change" event for all UserList
 # cannot connect if does not have a session gained from login route
 @socketio.on('connect')
 def connect():
     if request.namespace in session:
-        emit('user_change', users.to_dto())
+        emit('user_change', UserList.to_dto())
     else:
         return False
     
