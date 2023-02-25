@@ -48,6 +48,7 @@ class ChatView(tk.Tk):
 
         self.show_frame(LoginPopup)
     
+    # takes in an object and updates the view
     def publish(self):
         pass
 
