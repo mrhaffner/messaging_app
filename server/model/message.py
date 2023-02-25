@@ -1,7 +1,6 @@
 import json
 from dataclasses import asdict, dataclass, field
 
-from shared import SingletonMeta
 from user import User
 
 
