@@ -1,6 +1,26 @@
 import tkinter as tk
 from tkinter import ttk, scrolledtext
 
+# contains a dropdown of users to message (default is group)
+# contains an input box for your message to send
+# contains a button to send the message
+class MessageBar(tk.Frame):
+    pass
+
+
+# displays a list of all users currently online that aren't you
+class ActiveUsers(tk.Frame):
+    pass
+
+
+# displays the title, your username, and a logout button
+class TitleBar(tk.Frame):
+    pass
+
+
+# displays all the messages in chat
+class MessageList(tk.Frame):
+    pass
 
 # displays the other items in this file
 class ChatPage(ttk.Frame):
@@ -124,24 +144,3 @@ class ChatPage(ttk.Frame):
             self.entry.delete('0', 'end')
         return "break" # prevents the default behavior of the "Return"
 
-
-# contains a dropdown of users to message (default is group)
-# contains an input box for your message to send
-# contains a button to send the message
-class MessageBar(tk.Frame):
-    pass
-
-
-# displays a list of all users currently online that aren't you
-class ActiveUsers(tk.Frame):
-    pass
-
-
-# displays the title, your username, and a logout button
-class TitleBar(tk.Frame):
-    pass
-
-
-# displays all the messages in chat
-class MessageList(tk.Frame):
-    pass
