@@ -1,7 +1,8 @@
 import json
 
 from dataclasses import asdict, dataclass
-from shared import SingletonMeta
+
+from .shared import SingletonMeta
 
 
 @dataclass(frozen=True)
@@ -31,8 +32,8 @@ class UserList(metaclass=SingletonMeta):
     def add_from_dto(self, user_dto):
         self.add(User.from_dto(user_dto))
 
-    def remove(self, user):
-        self._users.discard(user)
+    def remove_by_username(self, username):
+        self._users.discard(User(username))
 
     def exists(self, user):
         return user in self._users

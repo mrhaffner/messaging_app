@@ -1,6 +1,14 @@
-@dataclass(frozen=True)
+import json
+
+from dataclasses import asdict, dataclass, field
+
+from .shared import Publisher, SingletonMeta
+from .user import User
+
+
+@dataclass()
 class Message:
-    id: int = field(init=False, default=Message.get_unique_id()) # default for user created
+    id: int = field(init=False, default=None) # default for user created
     text: str = field(compare=False)
     sender: User = field(compare=False)
     receiver: User = field(compare=False)
@@ -12,7 +20,7 @@ class Message:
     def from_dto(dto):
         message_dict = json.loads(dto)
         return Message(
-                        int(message_dict['id'])
+                        int(message_dict['id']),
                         message_dict['text'], 
                         User.from_dto(message_dict['sender']),  # necessary?
                         User.from_dto(message_dict['receiver'])  # necessary?
@@ -25,24 +33,24 @@ class MessageList(Publisher, metaclass=SingletonMeta):
 
     def __init__(self):
         super().__init__()
-        _messages = []
+        self._messages = []
 
     def add(self, message):
         self._messages.append(message)
-        super().publish()
+        super().publish(self)
 
     def add_from_dto(self, message_dto):
         self.add(Message.from_dto(message_dto))
-        super().publish()
+        super().publish(self)
 
     def add_many_from_dtos(self, messages_dto):
         for message_dto in messages_dto:
             self.add_from_dto(message_dto)
-        super().publish()
+        super().publish(self)
 
     def remove(self, message):
-        self._messages.discard(user)
-        super().publish()
+        self._messages.discard(message)
+        super().publish(self)
 
     def get_all(self):
-        return self._message
+        return self._messages
