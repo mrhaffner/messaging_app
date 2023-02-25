@@ -22,7 +22,7 @@ class UserList(Publisher, metaclass=SingletonMeta):
 
     def __init__(self):
         super().__init__()
-        _users = set()
+        self. _users = set()
 
     def add(self, user):
         if self.exists(user):

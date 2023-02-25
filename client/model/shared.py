@@ -31,7 +31,7 @@ class Publisher:
         self._subscribers = {}
 
     def subscribe(self, subscriber):
-        self._subscribers.add(subsciber)
+        self._subscribers.add(subscriber)
 
     def publish(self):
         for subscriber in self._subscribers:
