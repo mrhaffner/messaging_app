@@ -1,6 +1,7 @@
 from flask import Flask, request, session
 from flask_socketio import SocketIO, emit
-from server.model import UserList, UserDTO, User, MessageDTO, Message
+from model.message import Message
+from model.user import UserList, User
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
