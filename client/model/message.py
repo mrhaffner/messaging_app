@@ -2,8 +2,8 @@ import json
 
 from dataclasses import asdict, dataclass, field
 
-from shared import Publisher, SingletonMeta
-from user import User
+from .shared import Publisher, SingletonMeta
+from .user import User
 
 
 @dataclass()
@@ -37,20 +37,20 @@ class MessageList(Publisher, metaclass=SingletonMeta):
 
     def add(self, message):
         self._messages.append(message)
-        super().publish()
+        super().publish(self)
 
     def add_from_dto(self, message_dto):
         self.add(Message.from_dto(message_dto))
-        super().publish()
+        super().publish(self)
 
     def add_many_from_dtos(self, messages_dto):
         for message_dto in messages_dto:
             self.add_from_dto(message_dto)
-        super().publish()
+        super().publish(self)
 
     def remove(self, message):
         self._messages.discard(message)
-        super().publish()
+        super().publish(self)
 
     def get_all(self):
         return self._messages

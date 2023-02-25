@@ -33,6 +33,6 @@ class Publisher:
     def subscribe(self, subscriber):
         self._subscribers.add(subscriber)
 
-    def publish(self):
+    def publish(self, obj):
         for subscriber in self._subscribers:
-            subscriber.publish(self)
+            subscriber.publish(obj)
