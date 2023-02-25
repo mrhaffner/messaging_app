@@ -1,6 +1,5 @@
 from view import ChatView
-# import sys
-# sys.path.append('..')
+
 
 def main():
     app = ChatView()

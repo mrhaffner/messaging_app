@@ -123,33 +123,6 @@ class ChatPage(ttk.Frame):
             self.scrolled_text_chatbox.config(state='disable')
             self.entry.delete('0', 'end')
         return "break" # prevents the default behavior of the "Return"
-    
-    # def create_menubar(self, parent):
-    #     # Creates Menu widget
-    #     menubar = tk.Menu(parent, bd=3, relief=RAISED, activebackground="#80B9DC")
-
-    #     # creates settings menu
-    #     settings_menu = tk.Menu(menubar, tearoff=0, relief=RAISED, activebackground="#026AA9")
-    #     menubar.add_cascade(label="File", menu=settings_menu)
-    #     settings_menu.add_command(label="NextFrame", command=lambda: parent.show_frame(parent.LogInPage))
-    #     settings_menu.add_command(label="Home", command=lambda: parent.show_frame(parent.ChatPage))
-    #     settings_menu.add_command(label="Close", command=lambda: parent.show_frame(parent.ChatPage))
-    #     settings_menu.add_separator()
-    #     settings_menu.add_command(label="Exit", command=parent.quit)  
-
-    #     # creates proccessing menu
-    #     processing_menu = tk.Menu(menubar, tearoff=0)
-    #     menubar.add_cascade(label="ExampleMenu1", menu=processing_menu)
-    #     processing_menu.add_command(label="ExampleMenu2")
-    #     processing_menu.add_separator()
-
-    #     # creates help menu
-    #     help_menu = tk.Menu(menubar, tearoff=0)
-    #     menubar.add_cascade(label="Help", menu=help_menu)
-    #     help_menu.add_command(label="About", command=utils.about)
-    #     help_menu.add_separator()
-
-    #     return menubar
 
 
 # contains a dropdown of users to message (default is group)
