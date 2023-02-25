@@ -1,6 +1,5 @@
 import tkinter as tk
-from tkinter import *
-from tkinter import ttk, scrolledtext
+from tkinter import ttk
 
 # displays the login form
 class LoginPopup(ttk.Frame):

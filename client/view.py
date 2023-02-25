@@ -9,9 +9,8 @@
 # buttons in the components generally call methods in the controller
 
 import tkinter as tk
-from tkinter import *
-from client.component.main_window import ChatPage
-from client.component.login_popup import LoginPopup
+from component.main_window import ChatPage
+from component.login_popup import LoginPopup
 
 class ChatView(tk.Tk):
 

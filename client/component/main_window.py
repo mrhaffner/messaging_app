@@ -1,6 +1,6 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter import scrolledtext
+from tkinter import ttk, scrolledtext
+
 
 # displays the other items in this file
 class ChatPage(ttk.Frame):
