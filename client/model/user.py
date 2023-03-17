@@ -22,7 +22,7 @@ class UserList(Publisher, metaclass=SingletonMeta):
 
     def __init__(self):
         super().__init__()
-        self. _users = set()
+        self._users = set()
 
     def add(self, user):
         if self.exists(user):
@@ -41,6 +41,10 @@ class UserList(Publisher, metaclass=SingletonMeta):
 
     def remove(self, user):
         self._users.discard(user)
+        super().publish(self)
+
+    def remove_all_users(self):
+        self._users = set()
         super().publish(self)
 
     def exists(self, user):
