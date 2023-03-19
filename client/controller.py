@@ -17,7 +17,7 @@ import requests
 import socketio
 import threading as Thread
 from model.message import Message, MessageList
-from model.user import CurrentUser, User
+from model.user import CurrentUser, User, UserList
 
 API_URL = "http://127.0.0.1:5000"
 session = requests.Session()
@@ -30,22 +30,28 @@ currentUser = CurrentUser()
 # session info will likely be stored on CurrentUser
 # updated CurrentUser
 def login(username, password):
-    try:
-        sio.connect(API_URL)
-    except ConnectionRefusedError:
-        # error popup in view?
-        pass
-
     # create user object with username
     user = User()
     user.name = username
 
+    #send user DTO through post
+    response = session.post(url=f"{API_URL}/login/{user.to_dto}")
+
+    # handle repsonse code (success/failure)
+    # 200 okay
+    # should I send error code to view for display for a popup message?
+    if response.status_code != 200:
+        return False
+
+    try:
+        sio.connect(API_URL)
+    except ConnectionRefusedError:
+        return False
+
     #update current user
     currentUser.add(user, session)
-    
-    #send user DTO through post
-    session.post(url=f"{API_URL}/login/{user.to_dto}")
 
+    return True
     """
     #https://stackoverflow.com/questions/50412530/python-multi-threading-spawning-n-concurrent-threads
     #https://stackoverflow.com/questions/15085348/what-is-the-use-of-join-in-threading
@@ -59,30 +65,34 @@ def login(username, password):
     thread.join()
     """
 
-
 # accepts message from server
 # adds message to model
 # It comes in as a DTO, right?
 @sio.event
 def message_in(message_dto):
-    #is this all I need for this?
     MessageList.add(Message.from_dto(message_dto))
 
-# does this mean the CurrentUser switches accounts?
-# If so, this comes from the client so no DTO, right?
+#updating client user list to match what the server sends it
 @sio.event
-def user_change(user):
-    currentUser.add(user)
+def user_change(user_list_dto):
+    #user list remove all
+    UserList.remove_all_users()
+
+    #user list add many from dtos
+    UserList.add_many_from_dtos(user_list_dto)
 
 # sends logout POST request to server
 # probably spawns a thread to handle/wait for response
 # ends SocketIO connection
 # sets the CurrentUser to "none" state - (to be defined)
 def logout():
-    try:
-        session.post(url=f"{API_URL}/logout")
-    except ConnectionRefusedError:
-        # error popup in view?
+    response = session.post(url=f"{API_URL}/logout")
+
+    # if post did not get to server
+    if response.status_code != 200:
+        #disconnect anyways?
+        #perhaps server could periodically check if a user
+        #is connected or not in case logout post request fails.
         pass
 
     # ends SocketIO connection
@@ -91,23 +101,20 @@ def logout():
     # sets the CurrentUser to "none" state - (to be defined)
     currentUser.remove()
 
+    return True
 
 # sends message via SocketIO "message_out" event
-@sio.event('message_out')
-def send_message(id, text, sender, reciever):
+def send_message(text, sender, reciever):
     #check if message is not empty
     if text != "":
-        #convert to dto here or somewhere else?
         #send message to server
-        sio.emit('message', Message.to_dto(id, text, sender, reciever))
+        sio.emit('message', Message.to_dto(Message(text, sender, reciever)))
 
 
 # reconnect via websockets
 def reconnect():
     try:
         sio.connect(API_URL)
+        return True
     except ConnectionRefusedError:
-        # error popup in view?
-        pass
-    
-# anything else needed in controller?
+        return False
