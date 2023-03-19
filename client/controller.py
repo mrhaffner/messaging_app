@@ -31,15 +31,13 @@ currentUser = CurrentUser()
 # updated CurrentUser
 def login(username, password):
     # create user object with username
-    user = User()
-    user.name = username
+    user = User(username)
 
     #send user DTO through post
     response = session.post(url=f"{API_URL}/login/{user.to_dto}")
 
     # handle repsonse code (success/failure)
     # 200 okay
-    # should I send error code to view for display for a popup message?
     if response.status_code != 200:
         return False
 
@@ -86,14 +84,7 @@ def user_change(user_list_dto):
 # ends SocketIO connection
 # sets the CurrentUser to "none" state - (to be defined)
 def logout():
-    response = session.post(url=f"{API_URL}/logout")
-
-    # if post did not get to server
-    if response.status_code != 200:
-        #disconnect anyways?
-        #perhaps server could periodically check if a user
-        #is connected or not in case logout post request fails.
-        pass
+    session.post(url=f"{API_URL}/logout")
 
     # ends SocketIO connection
     sio.disconnect()
@@ -104,11 +95,11 @@ def logout():
     return True
 
 # sends message via SocketIO "message_out" event
-def send_message(text, sender, reciever):
+def send_message(text, reciever):
     #check if message is not empty
     if text != "":
         #send message to server
-        sio.emit('message', Message.to_dto(Message(text, sender, reciever)))
+        sio.emit('message', Message.to_dto(Message(text, currentUser, reciever)))
 
 
 # reconnect via websockets
