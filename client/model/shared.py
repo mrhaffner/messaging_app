@@ -28,7 +28,7 @@ class Publisher:
     Subscribers must implement the publish() method to receive updates
     """
     def __init__(self):
-        self._subscribers = {}
+        self._subscribers = set()
 
     def subscribe(self, subscriber):
         self._subscribers.add(subscriber)
