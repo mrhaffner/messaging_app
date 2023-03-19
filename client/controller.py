@@ -85,7 +85,7 @@ def user_change(user_list_dto):
 # ends SocketIO connection
 # sets the CurrentUser to "none" state - (to be defined)
 def logout():
-    response = session.post(url=f"{API_URL}/logout")
+    session.post(url=f"{API_URL}/logout")
 
     # ends SocketIO connection
     sio.disconnect()
