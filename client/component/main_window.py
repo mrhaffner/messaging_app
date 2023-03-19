@@ -144,3 +144,20 @@ class ChatPage(ttk.Frame):
             self.entry.delete('0', 'end')
         return "break" # prevents the default behavior of the "Return"
 
+    def update_login_status(self, status):
+        pass
+    
+    def update_user_list(self, users):
+        self.online_users_listbox.delete(0, tk.END)
+        for user in users:
+            self.online_users_listbox.insert(tk.END, user)
+    
+    def update_message_list(self, messages):
+        self.scrolled_text_chatbox.config(state='normal')
+        self.scrolled_text_chatbox.delete('1.0', tk.END)
+        for message in messages:
+            self.scrolled_text_chatbox.insert(tk.END, message + '\n')
+        self.scrolled_text_chatbox.config(state='disabled')
+    
+    
+

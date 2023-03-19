@@ -13,6 +13,7 @@ from component.main_window import ChatPage
 from component.login_popup import LoginPopup
 from model.user import CurrentUser, UserList
 from model.message import MessageList
+from typing import Type
 
 class ChatView(tk.Tk):
 
@@ -23,9 +24,9 @@ class ChatView(tk.Tk):
         self.current_user = CurrentUser()
         self.message_list = MessageList()
 
-        self.user_list.subscribe('''pass in something''') 
-        self.current_user.subscribe('''pass in something''')
-        self.message_list.subscribe('''pass in something''')
+        # self.user_list.subscribe() 
+        # self.current_user.subscribe()
+        # self.message_list.subscribe()
 
         self.title("Messaging Application")
         self.geometry("720x550")
@@ -37,22 +38,43 @@ class ChatView(tk.Tk):
         parent.grid_rowconfigure(0, weight=1)
         parent.grid_columnconfigure(0, weight=1)
 
+        # initialize dictionary to hold frames
         self.frames = {}
+
+        # Assign ChatPage and LogInPage classes to instance variables
         self.ChatPage = ChatPage
         self.LogInPage = LoginPopup
-
-        for F in (ChatPage, LoginPopup):
+        self.pages = (ChatPage, LoginPopup)
+        # Loop through the frames and create instances of each
+        for F in self.pages:
             frame = F(self, parent)
             self.frames[F] = frame
+            # place each frame in the parent grid
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame(LoginPopup)
+        self.show_frame(ChatPage)
     
     # takes in an object and updates the view
-    def publish(self):
-        pass
+    def publish(self, publisher):
+        if isinstance(publisher, UserList):
+            # Update user list in chat page
+            chat_page = self.frames[ChatPage]
+            chat_page.update_user_list(publisher.get_all())
+        elif isinstance(publisher, CurrentUser):
+            # Update login status in chat page?? Not sure what I should be doing in this case
+            if publisher.exists():
+                print('FIX ME: view.py | ChatView.publish()')
+                # chat_page.update_login_status("Logged in as {}".format(publisher.user.name)) 
+            else:
+                print('FIX ME: view.py | ChatView.publish()')
+                #chat_page.update_login_status("Not logged in")
+        elif isinstance(publisher, MessageList):
+            # Update message list in chat page
+            chat_page = self.frames[ChatPage]
+            chat_page.update_message_list(publisher.get_all())
+            
 
-    def show_frame(self, frame):
+    def show_frame(self, frame: Type[tk.Frame]):
         frame = self.frames[frame]
         # menubar = frame.create_menubar(self)
         # self.configure(menu=menubar)
