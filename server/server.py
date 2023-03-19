@@ -15,7 +15,7 @@ def login():
     data = request.json
     # hopefully works - test
     session['username'] = data.User.name
-    return f'logged in as {session["username"]}'
+    return "Success", 200
 
 
 # logout route - http POST
@@ -25,6 +25,7 @@ def logout():
     UserList.remove_by_username(session["username"])
     session.pop("username", None)
     emit('user_change', UserList.to_dto())
+    return "Success", 200
 
 
 
