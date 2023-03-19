@@ -76,7 +76,7 @@ def message_in(message_dto):
 @sio.event
 def user_change(user_list_dto):
     #user list remove all
-        #waiting for remove all users method from model
+    UserList.remove_all_users()
 
     #user list add many from dtos
     UserList.add_many_from_dtos(user_list_dto)
