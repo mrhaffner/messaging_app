@@ -3,7 +3,7 @@ from tkinter import ttk
 
 # displays the login form
 class LoginPopup(ttk.Frame):
-    def __init__(self, parent, container, controller):
+    def __init__(self, parent, container):
         super().__init__(container)
 
         # constants
