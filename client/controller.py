@@ -31,8 +31,7 @@ currentUser = CurrentUser()
 # updated CurrentUser
 def login(username, password):
     # create user object with username
-    user = User()
-    user.name = username
+    user = User(username)
 
     #send user DTO through post
     response = session.post(url=f"{API_URL}/login/{user.to_dto}")
