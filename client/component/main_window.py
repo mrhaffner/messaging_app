@@ -127,6 +127,7 @@ class ChatPage(ttk.Frame):
 
     # Event handler for sending a message
     def send_message(self, event=None):
+        # unsure how controllers send_message would be used in here ------------------------------------------
         # Get message from input area
         message = self.entry.get()
 
@@ -143,9 +144,6 @@ class ChatPage(ttk.Frame):
             self.scrolled_text_chatbox.config(state='disable')
             self.entry.delete('0', 'end')
         return "break" # prevents the default behavior of the "Return"
-
-    def update_login_status(self, status):
-        pass
     
     def update_user_list(self, users):
         self.online_users_listbox.delete(0, tk.END)
@@ -158,6 +156,3 @@ class ChatPage(ttk.Frame):
         for message in messages:
             self.scrolled_text_chatbox.insert(tk.END, message + '\n')
         self.scrolled_text_chatbox.config(state='disabled')
-    
-    
-
