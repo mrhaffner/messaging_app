@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, scrolledtext
+from controller import *
 
 # contains a dropdown of users to message (default is group)
 # contains an input box for your message to send
@@ -37,7 +38,6 @@ class ChatPage(ttk.Frame):
         style = ttk.Style()
         style.configure('Custom.TEntry', padding=10, height=10, width=50)
 
-
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   WIDGETS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -72,7 +72,6 @@ class ChatPage(ttk.Frame):
         # ## MISSING EVENT HANDLER FOR LOGGING OUT
         self.logout_button = ttk.Button(self, text="Log Out") 
 
-
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   GRID CONFIGURATIONS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -100,7 +99,6 @@ class ChatPage(ttk.Frame):
         # Disable the list box
         self.online_users_listbox.config(state='disabled')
 
-
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   BINDINGS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -108,8 +106,6 @@ class ChatPage(ttk.Frame):
         self.entry.bind("<FocusIn>", self.on_entry_click) # gets rid of the "Enter text here..." when clicking into the Entry
         self.entry.bind("<FocusOut>", self.on_focusout) # brings back the "Enter text here..." when clicking off of the Entry
         self.user_dropdown.bind('<<ComboboxSelected>>', self.select_user) # calls a method that print the user that is selected (no real functionality atm)
-
-
 
     # Event handler to select a User from the Combobox
     def select_user(self, event):
@@ -127,22 +123,21 @@ class ChatPage(ttk.Frame):
 
     # Event handler for sending a message
     def send_message(self, event=None):
-        # unsure how controllers send_message would be used in here ------------------------------------------
         # Get message from input area
         message = self.entry.get()
 
         # Prevents "Enter text here..." being sent to the chat room
         if message == self.ENTER_TEXT_HERE:
             return
-
-        if message:
-            # Enable the chatbox to insert the message
-            self.scrolled_text_chatbox.config(state='normal')
-            # Add message to chatbox
-            self.scrolled_text_chatbox.insert(tk.END, f"{message}\n")
-            # Disable the chat box
-            self.scrolled_text_chatbox.config(state='disable')
-            self.entry.delete('0', 'end')
+        send_message(message, )
+        # if message:
+        #     # Enable the chatbox to insert the message
+        #     self.scrolled_text_chatbox.config(state='normal')
+        #     # Add message to chatbox
+        #     self.scrolled_text_chatbox.insert(tk.END, f"{message}\n")
+        #     # Disable the chat box
+        #     self.scrolled_text_chatbox.config(state='disable')
+        #     self.entry.delete('0', 'end')
         return "break" # prevents the default behavior of the "Return"
     
     def update_user_list(self, users):
