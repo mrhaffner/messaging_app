@@ -74,6 +74,6 @@ class LoginPopup(ttk.Frame):
         if self.passwordEntry.get() == "":
             self.passwordEntry.insert(0, self.PASSWORD_TEXT)
     
-    # helper method that gets called when the user presses the log-in button
-    def log_user_in(self, event=None):
-        pass
+    # # helper method that gets called when the user presses the log-in button
+    # def log_user_in(self, event=None):
+    #     pass
