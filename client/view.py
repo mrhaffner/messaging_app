@@ -54,7 +54,7 @@ class ChatView(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         # initially show the login page
-        self.show_frame(self.logInPage)
+        self.show_frame(self.chatPage)
 
     def show_frame(self, frame: Type[tk.Frame]):
         frame = self.frames[frame]
@@ -68,6 +68,7 @@ class ChatView(tk.Tk):
             # Update user list in chat page
             chat_page = self.frames[self.chatPage]
             chat_page.update_user_list(publisher.get_all())
+            chat_page.update_user_dropdown_combobox(publisher.get_all())
         elif isinstance(publisher, CurrentUser):
             ''' what this is doing in response to the CurrentUser changing
             is either going to the log in screen or the main window '''
