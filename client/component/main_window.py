@@ -109,11 +109,11 @@ class ChatPage(ttk.Frame):
         self.entry.bind("<Return>", self._send_message) # binds hitting the enter key to the send_message() event handler
         self.entry.bind("<FocusIn>", self._on_entry_click) # gets rid of the "Enter text here..." when clicking into the Entry
         self.entry.bind("<FocusOut>", self._on_focusout) # brings back the "Enter text here..." when clicking off of the Entry
-        self.user_dropdown_combobox.bind('<<ComboboxSelected>>', self._select_user) # calls a method that print the user that is selected (no real functionality atm)
+        # self.user_dropdown_combobox.bind('<<ComboboxSelected>>', self._select_user) # calls a method that print the user that is selected (no real functionality atm)
 
-    # Event handler to select a User from the Combobox
-    def _select_user(self, event):
-        return self.user_dropdown_combobox.get()
+    # # Event handler to select a User from the Combobox
+    # def _select_user(self, event):
+    #     return self.user_dropdown_combobox.get()
 
     # Event handler for <FocusIn> event
     def _on_entry_click(self, event):
@@ -126,6 +126,7 @@ class ChatPage(ttk.Frame):
             self.entry.insert(0, self.ENTER_TEXT_HERE)
 
     # TODO: Implement logic so that the chatbox can be disabled after sending a message
+    # TODO: I believe my self.users logic within _send_message and _update_user_listbox is flawed. 
     # Event handler for sending a message
     def _send_message(self, event=None):
         # Get message from input area
