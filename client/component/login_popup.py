@@ -48,6 +48,7 @@ class LoginPopup(ttk.Frame):
         self.usernameEntry.bind("<FocusOut>", self.on_focusout) 
         self.passwordEntry.bind("<FocusOut>", self.on_focusout) 
     
+    # logs the user in after the button is clicked 
     def on_button_click(self):
         if (self.usernameEntry.get() != self.USERNAME_TEXT and self.passwordEntry.get() != self.PASSWORD_TEXT):
             print('first check')
