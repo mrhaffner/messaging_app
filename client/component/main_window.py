@@ -107,21 +107,21 @@ class ChatPage(ttk.Frame):
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   BINDINGS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         self.entry.bind("<Return>", self._send_message) # binds hitting the enter key to the send_message() event handler
-        self.entry.bind("<FocusIn>", self.on_entry_click) # gets rid of the "Enter text here..." when clicking into the Entry
-        self.entry.bind("<FocusOut>", self.on_focusout) # brings back the "Enter text here..." when clicking off of the Entry
-        self.user_dropdown_combobox.bind('<<ComboboxSelected>>', self.select_user) # calls a method that print the user that is selected (no real functionality atm)
+        self.entry.bind("<FocusIn>", self._on_entry_click) # gets rid of the "Enter text here..." when clicking into the Entry
+        self.entry.bind("<FocusOut>", self._on_focusout) # brings back the "Enter text here..." when clicking off of the Entry
+        self.user_dropdown_combobox.bind('<<ComboboxSelected>>', self._select_user) # calls a method that print the user that is selected (no real functionality atm)
 
     # Event handler to select a User from the Combobox
-    def select_user(self, event):
+    def _select_user(self, event):
         return self.user_dropdown_combobox.get()
 
     # Event handler for <FocusIn> event
-    def on_entry_click(self, event):
+    def _on_entry_click(self, event):
         if self.entry.get() == self.ENTER_TEXT_HERE:
             self.entry.delete(0, "end") # remove all the text in the entry
 
     # Event handler for <FocusOut> event
-    def on_focusout(self, event):
+    def _on_focusout(self, event):
         if self.entry.get() == "":
             self.entry.insert(0, self.ENTER_TEXT_HERE)
 
@@ -157,7 +157,7 @@ class ChatPage(ttk.Frame):
         logout()
     
     # Updates the list box that contains the online users, not the drop down menu.
-    def update_user_listbox(self, users):
+    def _update_user_listbox(self, users):
         self.online_users_listbox.delete(0, tk.END)
         for user in users:
             self.online_users_listbox.insert(tk.END, user)
@@ -165,13 +165,13 @@ class ChatPage(ttk.Frame):
                 self.users.append(user)
     
     # Updates the drop down menu of users that the user can select to send messages to. 
-    def update_user_dropdown_combobox(self, users):
+    def _update_user_dropdown_combobox(self, users):
         self.user_dropdown_combobox['state'] = 'normal'
         self.user_dropdown_combobox.configure(values=users)
         self.user_dropdown_combobox['state'] = 'readonly'
     
     # Updates the list of message entries in the chat room. 
-    def update_message_list_entries(self, messages):
+    def _update_message_list_entries(self, messages):
         self.scrolled_text_chatbox.config(state='normal')
         self.scrolled_text_chatbox.delete('1.0', tk.END)
         for message in messages:
