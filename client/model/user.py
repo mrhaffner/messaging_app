@@ -8,6 +8,9 @@ from .shared import Publisher, SingletonMeta
 class User:
     name: str
 
+    def __str__(self):
+        return self.name
+
     def to_dto(self):
         return json.dumps(asdict(self))
 
