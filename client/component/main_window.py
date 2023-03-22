@@ -153,6 +153,7 @@ class ChatPage(ttk.Frame):
         #     self.entry.delete('0', 'end')
         return "break" # prevents the default behavior of the "Return"
     
+    # TODO: Provide other means for the user to log out besides hitting the log out button
     # Calls the controller logout() method to log the user out.
     def _logout(self):
         logout()
