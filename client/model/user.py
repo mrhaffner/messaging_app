@@ -8,9 +8,6 @@ from .shared import Publisher, SingletonMeta
 class User:
     name: str
 
-    def __str__(self):
-        return self.name
-
     def to_dto(self):
         return json.dumps(asdict(self))
 
@@ -55,12 +52,6 @@ class UserList(Publisher, metaclass=SingletonMeta):
 
     def get_all(self):
         return list(self._users)
-    
-    def get_by_name(self, name):
-        for user in self._users:
-            if user.name == name:
-                return user
-        return None
 
 
 # represents the current user
