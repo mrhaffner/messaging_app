@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, scrolledtext
-from controller import *
+import controller
+from view import send_message
 
 # contains a dropdown of users to message (default is group)
 # contains an input box for your message to send
@@ -139,10 +140,10 @@ class ChatPage(ttk.Frame):
         # Gets the username of the user that is selected from the user drop down menu
         user_name = self.user_dropdown_combobox.get()
         # Searches for the user in self.users
-        for user in self.users:
+        for user in self.users: # TODO: need to change this
             # if the user is found, send_message() from the controller is called.
             if user_name == str(user):
-                send_message(message, user)
+                controller.send_message(message, user)
         # if message:
         #     # Enable the chatbox to insert the message
         #     self.scrolled_text_chatbox.config(state='normal')
@@ -156,20 +157,18 @@ class ChatPage(ttk.Frame):
     # TODO: Provide other means for the user to log out besides hitting the log out button
     # Calls the controller logout() method to log the user out.
     def _logout(self):
-        logout()
+        controller.logout()
     
     # Updates the list box that contains the online users, not the drop down menu.
     def _update_user_listbox(self, users):
         self.online_users_listbox.delete(0, tk.END)
         for user in users:
-            self.online_users_listbox.insert(tk.END, user)
-            if user not in self.users:
-                self.users.append(user)
+            self.online_users_listbox.insert(tk.END, user.name)
     
     # Updates the drop down menu of users that the user can select to send messages to. 
     def _update_user_dropdown_combobox(self, users):
         self.user_dropdown_combobox['state'] = 'normal'
-        self.user_dropdown_combobox.configure(values=users)
+        self.user_dropdown_combobox.configure(values=[user.name for user in users])
         self.user_dropdown_combobox['state'] = 'readonly'
     
     # Updates the list of message entries in the chat room. 

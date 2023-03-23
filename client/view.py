@@ -14,7 +14,7 @@ from component.login_popup import LoginPopup
 from model.user import CurrentUser, UserList
 from model.message import MessageList
 from typing import Type
-from controller import *
+import controller
 
 class ChatView(tk.Tk):
 
@@ -61,6 +61,10 @@ class ChatView(tk.Tk):
         # menubar = frame.create_menubar(self)
         # self.configure(menu=menubar)
         frame.tkraise()
+    
+    def send_message(self, message, user_name):
+        user = self.user_list.get_by_name(user_name) # returns user or None
+        controller.send_message(message, user)
     
     # takes in an object and updates the view
     def publish(self, publisher):
