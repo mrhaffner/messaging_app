@@ -55,6 +55,12 @@ class UserList(Publisher, metaclass=SingletonMeta):
 
     def get_all(self):
         return list(self._users)
+    
+    def get_by_name(self, name):
+        for user in self._users:
+            if user.name == name:
+                return user
+        return None
 
 
 # represents the current user
