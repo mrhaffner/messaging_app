@@ -43,9 +43,9 @@ class ChatView(tk.Tk):
         self.frames = {}
 
         # Assign ChatPage and LogInPage classes to instance variables
-        self.chatPage = ChatPage
-        self.logInPage = LoginPopup
-        self.pages = (self.chatPage, self.logInPage)
+        self.chat_page = ChatPage
+        self.log_in_page = LoginPopup
+        self.pages = (self.chat_page, self.log_in_page)
         # Loop through the frames and create instances of each
         for TtkFrame in self.pages:
             frame = TtkFrame(self, parent) 
@@ -54,12 +54,10 @@ class ChatView(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         # initially show the login page
-        self.show_frame(self.chatPage)
+        self.show_frame(self.chat_page)
 
     def show_frame(self, frame: Type[tk.Frame]):
         frame = self.frames[frame]
-        # menubar = frame.create_menubar(self)
-        # self.configure(menu=menubar)
         frame.tkraise()
     
     # TODO: Error handling
@@ -86,7 +84,7 @@ class ChatView(tk.Tk):
     def publish(self, publisher):
         if isinstance(publisher, UserList):
             # Update user list in chat page
-            chat_page = self.frames[self.chatPage]
+            chat_page = self.frames[self.chat_page]
             chat_page.update_user_list(publisher.get_all())
             chat_page.update_user_dropdown_combobox(publisher.get_all())
         elif isinstance(publisher, CurrentUser):
@@ -94,14 +92,14 @@ class ChatView(tk.Tk):
             is either going to the log in screen or the main window '''
             # check if there is a current user and if so, then switch the screen to chat page.
             if publisher.exists():
-                chat_page = self.frames[self.chatPage]
+                chat_page = self.frames[self.chat_page]
                 self.show_frame(chat_page)
             # else show the login page
             else: 
-                login_page = self.frames[self.logInPage]
-                self.show_frame(login_page)
+                log_in_page = self.frames[self.log_in_page]
+                self.show_frame(log_in_page)
         elif isinstance(publisher, MessageList):
             # Update message list in chat page
-            chat_page = self.frames[self.chatPage]
+            chat_page = self.frames[self.chat_page]
             chat_page.update_message_list(publisher.get_all())
             

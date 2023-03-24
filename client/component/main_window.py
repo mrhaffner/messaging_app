@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk, scrolledtext
-import controller
 import view
 
 # contains a dropdown of users to message (default is group)
@@ -117,6 +116,7 @@ class ChatPage(ttk.Frame):
         if self.entry.get() == "":
             self.entry.insert(0, self.ENTER_TEXT_HERE)
 
+    # TODO: Error handling
     # TODO: Implement logic so that the chatbox can be disabled after sending a message
     # Event handler for sending a message
     def _send_message(self, event=None):
@@ -141,8 +141,8 @@ class ChatPage(ttk.Frame):
             self.entry.delete('0', 'end')
         return "break" # prevents the default behavior of the "Return"
     
+    # TODO: Error handling
     # TODO: Provide other means for the user to log out besides hitting the log out button
-    # Calls the controller logout() method to log the user out.
     def _logout(self):
         view.ChatView.log_out()
     

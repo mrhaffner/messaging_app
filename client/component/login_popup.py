@@ -47,7 +47,7 @@ class LoginPopup(ttk.Frame):
         self.usernameEntry.bind("<FocusOut>", self.on_focusout) 
         self.passwordEntry.bind("<FocusOut>", self.on_focusout) 
     
-    # TODO: Error handling?
+    # TODO: Error handling
     # logs the user in after the button is clicked 
     def _log_user_in(self):
         user_name = self.usernameEntry.get()
