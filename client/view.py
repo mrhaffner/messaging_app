@@ -67,6 +67,7 @@ class ChatView(tk.Tk):
         if user != None:
             controller.send_message(message, user)
     
+    # TODO: Should I do anything about the boolean return value from controller.logout()?
     def log_out(self):
         controller.logout()
     
