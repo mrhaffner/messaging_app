@@ -64,8 +64,19 @@ class ChatView(tk.Tk):
     
     def send_message(self, message, user_name):
         user = self.user_list.get_by_name(user_name) # returns user or None
-        controller.send_message(message, user)
+        if user != None:
+            controller.send_message(message, user)
     
+    def log_out():
+        controller.logout()
+    
+    # TODO: Talk about the return type of login and what I should do with it within this method
+    def log_in(user_name, password):
+        controller.login(user_name, password) # returns a boolean value, not sure if I should be doing anything with that
+
+    def get_user_list(self):
+        return self.user_list.get_all()
+
     # takes in an object and updates the view
     def publish(self, publisher):
         if isinstance(publisher, UserList):

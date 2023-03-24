@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, scrolledtext
 import controller
-from view import send_message
+import view
 
 # contains a dropdown of users to message (default is group)
 # contains an input box for your message to send
@@ -29,7 +29,6 @@ class ChatPage(ttk.Frame):
     def __init__(self, parent, container):
         super().__init__(container)
         self.parent = parent
-        self.users = []
 
         # Constants
         self.ENTER_TEXT_HERE = "Enter text here..."
@@ -48,14 +47,10 @@ class ChatPage(ttk.Frame):
 
         # Create listbox for online users using dummy data for now
         self.online_users_listbox = tk.Listbox(self, height=20)
-        
-        # users = ['User 1', 'User 2', 'User 3', 'User 4']
-        # for user in users:
-        #     self.online_users_listbox.insert(tk.END, user)
 
         # Create dropdown menu for selecting a user
         self.user_var = tk.StringVar(self)
-        self.user_dropdown_combobox = ttk.Combobox(self, textvariable=self.user_var, values=self.users)
+        self.user_dropdown_combobox = ttk.Combobox(self, textvariable=self.user_var, values=view.ChatView.get_user_list)
         # I think we're gonna want to set the state to readonly right off the bat
         # I'm not sure if we'll be able to select a user if its readonly just yet, so this may need to be changed to 'normal' here.
         self.user_dropdown_combobox['state'] = 'readonly' 
@@ -112,10 +107,6 @@ class ChatPage(ttk.Frame):
         self.entry.bind("<FocusOut>", self._on_focusout) # brings back the "Enter text here..." when clicking off of the Entry
         # self.user_dropdown_combobox.bind('<<ComboboxSelected>>', self._select_user) # calls a method that print the user that is selected (no real functionality atm)
 
-    # # Event handler to select a User from the Combobox
-    # def _select_user(self, event):
-    #     return self.user_dropdown_combobox.get()
-
     # Event handler for <FocusIn> event
     def _on_entry_click(self, event):
         if self.entry.get() == self.ENTER_TEXT_HERE:
@@ -127,7 +118,6 @@ class ChatPage(ttk.Frame):
             self.entry.insert(0, self.ENTER_TEXT_HERE)
 
     # TODO: Implement logic so that the chatbox can be disabled after sending a message
-    # TODO: I believe my self.users logic within _send_message and _update_user_listbox is flawed. 
     # Event handler for sending a message
     def _send_message(self, event=None):
         # Get message from input area
@@ -139,25 +129,22 @@ class ChatPage(ttk.Frame):
         
         # Gets the username of the user that is selected from the user drop down menu
         user_name = self.user_dropdown_combobox.get()
-        # Searches for the user in self.users
-        for user in self.users: # TODO: need to change this
-            # if the user is found, send_message() from the controller is called.
-            if user_name == str(user):
-                controller.send_message(message, user)
-        # if message:
-        #     # Enable the chatbox to insert the message
-        #     self.scrolled_text_chatbox.config(state='normal')
-        #     # Add message to chatbox
-        #     self.scrolled_text_chatbox.insert(tk.END, f"{message}\n")
-        #     # Disable the chat box
-        #     self.scrolled_text_chatbox.config(state='disable')
-        #     self.entry.delete('0', 'end')
+
+        if message:
+            view.ChatView.send_message(message, user_name)
+            # Enable the chatbox to insert the message
+            self.scrolled_text_chatbox.config(state='normal')
+            # Add message to chatbox
+            self.scrolled_text_chatbox.insert(tk.END, f"{message}\n")
+            # Disable the chat box
+            self.scrolled_text_chatbox.config(state='disable')
+            self.entry.delete('0', 'end')
         return "break" # prevents the default behavior of the "Return"
     
     # TODO: Provide other means for the user to log out besides hitting the log out button
     # Calls the controller logout() method to log the user out.
     def _logout(self):
-        controller.logout()
+        view.ChatView.log_out()
     
     # Updates the list box that contains the online users, not the drop down menu.
     def _update_user_listbox(self, users):

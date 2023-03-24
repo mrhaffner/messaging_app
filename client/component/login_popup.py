@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from controller import *
+import view
 from component.main_window import ChatPage
 
 # displays the login form
@@ -50,13 +50,18 @@ class LoginPopup(ttk.Frame):
     
     # logs the user in after the button is clicked 
     def on_button_click(self):
-        if (self.usernameEntry.get() != self.USERNAME_TEXT and self.passwordEntry.get() != self.PASSWORD_TEXT):
-            print('first check')
-            if (login(self.usernameEntry.get(), self.passwordEntry.get())):
-                print('user logged in')
-                # switch page to ChatPage - not sure if there is a better way to do this or if this is even correct
-                chat_page = ChatPage
-                chat_page.tkraise() 
+        user_name = self.usernameEntry.get()
+        password = self.passwordEntry.get()
+
+        if (user_name != self.USERNAME_TEXT and password != self.PASSWORD_TEXT):
+            self._log_user_in(user_name, password)
+
+    # TODO: Add exception handling
+    def _log_user_in(user_name, password):
+        if (view.ChatView.log_in(user_name, password)):
+            # Switch page to ChatPage
+            chat_page = ChatPage
+            chat_page.tkraise() 
 
     # gets rid of the "Enter text here..." when clicking into the Entry
     def on_username_entry_click(self, event):
@@ -67,6 +72,7 @@ class LoginPopup(ttk.Frame):
     def on_pw_entry_click(self, event):
         if self.passwordEntry.get() == self.PASSWORD_TEXT:
             self.passwordEntry.delete(0, "end")
+
     # brings back the "Enter text here..." when clicking off of the Entry
     def on_focusout(self, event):
         if self.usernameEntry.get() == "":
@@ -74,7 +80,3 @@ class LoginPopup(ttk.Frame):
         
         if self.passwordEntry.get() == "":
             self.passwordEntry.insert(0, self.PASSWORD_TEXT)
-    
-    # # helper method that gets called when the user presses the log-in button
-    # def log_user_in(self, event=None):
-    #     pass
