@@ -29,7 +29,7 @@ class LoginPopup(ttk.Frame):
         self.passwordEntry.insert(0, self.PASSWORD_TEXT)
 
         # MISSING command to call handler to log in
-        self.logInBtn = tk.Button(self, text="Log In", command=self.on_button_click)
+        self.logInBtn = tk.Button(self, text="Log In", command=self._log_user_in)
 
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   GRID CONFIGURATIONS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -48,20 +48,17 @@ class LoginPopup(ttk.Frame):
         self.usernameEntry.bind("<FocusOut>", self.on_focusout) 
         self.passwordEntry.bind("<FocusOut>", self.on_focusout) 
     
+    # TODO: Error handling?
     # logs the user in after the button is clicked 
-    def on_button_click(self):
+    def _log_user_in(self):
         user_name = self.usernameEntry.get()
         password = self.passwordEntry.get()
 
         if (user_name != self.USERNAME_TEXT and password != self.PASSWORD_TEXT):
-            self._log_user_in(user_name, password)
-
-    # TODO: Add exception handling
-    def _log_user_in(user_name, password):
-        if (view.ChatView.log_in(user_name, password)):
-            # Switch page to ChatPage
-            chat_page = ChatPage
-            chat_page.tkraise() 
+            if (view.ChatView.log_in(user_name, password)):
+                # Switch page to ChatPage
+                chat_page = ChatPage
+                chat_page.tkraise() 
 
     # gets rid of the "Enter text here..." when clicking into the Entry
     def on_username_entry_click(self, event):
