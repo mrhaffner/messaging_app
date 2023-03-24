@@ -47,9 +47,9 @@ class ChatView(tk.Tk):
         self.logInPage = LoginPopup
         self.pages = (self.chatPage, self.logInPage)
         # Loop through the frames and create instances of each
-        for F in self.pages:
-            frame = F(self, parent) 
-            self.frames[F] = frame
+        for TtkFrame in self.pages:
+            frame = TtkFrame(self, parent) 
+            self.frames[TtkFrame] = frame
             # place each frame in the parent grid
             frame.grid(row=0, column=0, sticky="nsew")
 
@@ -62,19 +62,23 @@ class ChatView(tk.Tk):
         # self.configure(menu=menubar)
         frame.tkraise()
     
+    # TODO: Error handling
     def send_message(self, message, user_name):
         user = self.user_list.get_by_name(user_name) # returns user or None
         if user != None:
             controller.send_message(message, user)
     
+    # TODO: Error handling
     # TODO: Should I do anything about the boolean return value from controller.logout()?
     def log_out(self):
         controller.logout()
     
+    # TODO: Error handling
     # TODO: Talk about the return type of login and what I should do with it within this method
     def log_in(self, user_name, password):
         controller.login(user_name, password) # returns a boolean value, not sure if I should be doing anything with that
 
+     # TODO: Error handling
     def get_user_list(self):
         return self.user_list.get_all()
 

@@ -28,7 +28,6 @@ class LoginPopup(ttk.Frame):
         self.passwordEntry = ttk.Entry(self, show="*")
         self.passwordEntry.insert(0, self.PASSWORD_TEXT)
 
-        # MISSING command to call handler to log in
         self.logInBtn = tk.Button(self, text="Log In", command=self._log_user_in)
 
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -55,23 +54,23 @@ class LoginPopup(ttk.Frame):
         password = self.passwordEntry.get()
 
         if (user_name != self.USERNAME_TEXT and password != self.PASSWORD_TEXT):
-            if (view.ChatView.log_in(user_name, password)):
+            if view.ChatView.log_in(user_name, password):
                 # Switch page to ChatPage
                 chat_page = ChatPage
                 chat_page.tkraise() 
 
     # gets rid of the "Enter text here..." when clicking into the Entry
-    def on_username_entry_click(self, event):
+    def _on_username_entry_click(self, event):
         if self.usernameEntry.get() == self.USERNAME_TEXT:
             self.usernameEntry.delete(0, "end")
 
     # gets rid of the "Enter text here..." when clicking into the Entry
-    def on_pw_entry_click(self, event):
+    def _on_pw_entry_click(self, event):
         if self.passwordEntry.get() == self.PASSWORD_TEXT:
             self.passwordEntry.delete(0, "end")
 
     # brings back the "Enter text here..." when clicking off of the Entry
-    def on_focusout(self, event):
+    def _on_focusout(self, event):
         if self.usernameEntry.get() == "":
             self.usernameEntry.insert(0, self.USERNAME_TEXT)
         
