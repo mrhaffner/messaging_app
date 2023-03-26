@@ -7,6 +7,7 @@ app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 socketio = SocketIO(app)
 
+users = UserList()
 
 # login route - http POST
 # create a User session which will allow one to connect via websockets
@@ -14,7 +15,7 @@ socketio = SocketIO(app)
 def login():
     data = request.json
     # hopefully works - test
-    session['username'] = data.User.name
+    session['username'] = User.from_dto(data).name
     return "Success", 200
 
 
@@ -60,8 +61,10 @@ def disconnect():
 # cannot connect if does not have a session gained from login route
 @socketio.on('connect')
 def connect():
-    if request.namespace in session:
-        emit('user_change', UserList.to_dto())
+    if session.get('username') is not None:
+        users.add(User(session.get('username')))
+        print(users.to_dto())
+        emit('user_change', users.to_dto())
     else:
         return False
     

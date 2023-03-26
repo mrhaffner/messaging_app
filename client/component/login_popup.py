@@ -1,13 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
-import view
-from component.main_window import ChatPage
+
 
 # displays the login form
 class LoginPopup(ttk.Frame):
     def __init__(self, parent, container):
         super().__init__(container)
 
+        self.view = parent
         # constants
         self.USERNAME_TEXT = "Username"
         self.PASSWORD_TEXT = "Password"
@@ -42,10 +42,10 @@ class LoginPopup(ttk.Frame):
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   BINDINGS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         #self.entry.bind("<Return>", self.send_message) # binds hitting the enter key to the send_message() event handler
-        self.usernameEntry.bind("<FocusIn>", self.on_username_entry_click)
-        self.passwordEntry.bind("<FocusIn>", self.on_pw_entry_click) 
-        self.usernameEntry.bind("<FocusOut>", self.on_focusout) 
-        self.passwordEntry.bind("<FocusOut>", self.on_focusout) 
+        self.usernameEntry.bind("<FocusIn>", self._on_username_entry_click)
+        self.passwordEntry.bind("<FocusIn>", self._on_pw_entry_click) 
+        self.usernameEntry.bind("<FocusOut>", self._on_focusout) 
+        self.passwordEntry.bind("<FocusOut>", self._on_focusout) 
     
     # TODO: Error handling
     # logs the user in after the button is clicked 
@@ -54,10 +54,12 @@ class LoginPopup(ttk.Frame):
         password = self.passwordEntry.get()
 
         if (user_name != self.USERNAME_TEXT and password != self.PASSWORD_TEXT):
-            if view.ChatView.log_in(user_name, password):
-                # Switch page to ChatPage
-                chat_page = ChatPage
-                chat_page.tkraise() 
+            print("popup")
+            self.view.log_in(user_name, password)
+            # if view.ChatView.log_in(user_name, password):
+            #     # Switch page to ChatPage
+            #     chat_page = ChatPage
+            #     chat_page.tkraise() 
 
     # gets rid of the "Enter text here..." when clicking into the Entry
     def _on_username_entry_click(self, event):

@@ -23,6 +23,8 @@ API_URL = "http://127.0.0.1:5000"
 session = requests.Session()
 sio = socketio.Client(http_session=session)
 currentUser = CurrentUser()
+users = UserList()
+messages = MessageList()
 
 # sends login POST request to server
 # probably spawns a thread to handle/wait for response
@@ -30,12 +32,13 @@ currentUser = CurrentUser()
 # session info will likely be stored on CurrentUser
 # updated CurrentUser
 def login(username, password):
+    print("login controller")
     # create user object with username
     user = User(username)
 
     #send user DTO through post
-    response = session.post(url=f"{API_URL}/login/{user.to_dto}")
-
+    response = session.post(f"{API_URL}/login", json=user.to_dto())
+    print(response)
     # handle repsonse code (success/failure)
     # 200 okay
     if response.status_code != 200:
@@ -43,12 +46,14 @@ def login(username, password):
 
     try:
         sio.connect(API_URL)
-    except ConnectionRefusedError:
+    except Exception as e:
+        print(e)
         return False
 
     #update current user
     currentUser.add(user, session)
-
+    print(currentUser.user)
+    print(currentUser.exists())
     return True
     """
     #https://stackoverflow.com/questions/50412530/python-multi-threading-spawning-n-concurrent-threads
@@ -68,16 +73,16 @@ def login(username, password):
 # It comes in as a DTO, right?
 @sio.event
 def message_in(message_dto):
-    MessageList.add(Message.from_dto(message_dto))
+    messages.add(Message.from_dto(message_dto))
 
 #updating client user list to match what the server sends it
 @sio.event
 def user_change(user_list_dto):
     #user list remove all
-    UserList.remove_all_users()
+    users.remove_all_users()
 
     #user list add many from dtos
-    UserList.add_many_from_dtos(user_list_dto)
+    users.add_many_from_dtos(user_list_dto)
 
 # sends logout POST request to server
 # probably spawns a thread to handle/wait for response

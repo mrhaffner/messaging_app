@@ -56,7 +56,7 @@ class ChatView(tk.Tk):
         # initially show the login page
         self.show_frame(self.log_in_page)
 
-    def show_frame(self, frame: Type[tk.Frame]):
+    def show_frame(self, frame):
         frame = self.frames[frame]
         frame.tkraise()
     
@@ -74,6 +74,7 @@ class ChatView(tk.Tk):
     # TODO: Error handling
     # TODO: Talk about the return type of login and what I should do with it within this method
     def log_in(self, user_name, password):
+        print("log_in view")
         controller.login(user_name, password) # returns a boolean value, not sure if I should be doing anything with that
 
      # TODO: Error handling
@@ -85,15 +86,14 @@ class ChatView(tk.Tk):
         if isinstance(publisher, UserList):
             # Update user list in chat page
             chat_page = self.frames[self.chat_page]
-            chat_page.update_user_list(publisher.get_all())
-            chat_page.update_user_dropdown_combobox(publisher.get_all())
+            chat_page._update_user_listbox(publisher.get_all())
+            chat_page._update_user_dropdown_combobox(publisher.get_all())
         elif isinstance(publisher, CurrentUser):
             ''' what this is doing in response to the CurrentUser changing
             is either going to the log in screen or the main window '''
             # check if there is a current user and if so, then switch the screen to chat page.
             if publisher.exists():
-                chat_page = self.frames[self.chat_page]
-                self.show_frame(chat_page)
+                self.show_frame(self.chat_page)
             # else show the login page
             else: 
                 log_in_page = self.frames[self.log_in_page]

@@ -1,7 +1,7 @@
 import json
 from dataclasses import asdict, dataclass, field
 
-from user import User
+from .user import User
 
 
 class UniqueId:

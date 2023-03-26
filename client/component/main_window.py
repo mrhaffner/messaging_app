@@ -2,26 +2,6 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext
 import view
 
-# contains a dropdown of users to message (default is group)
-# contains an input box for your message to send
-# contains a button to send the message
-class MessageBar(tk.Frame):
-    pass
-
-
-# displays a list of all users currently online that aren't you
-class ActiveUsers(tk.Frame):
-    pass
-
-
-# displays the title, your username, and a logout button
-class TitleBar(tk.Frame):
-    pass
-
-
-# displays all the messages in chat
-class MessageList(tk.Frame):
-    pass
 
 # displays the other items in this file
 class ChatPage(ttk.Frame):
@@ -49,7 +29,7 @@ class ChatPage(ttk.Frame):
 
         # Create dropdown menu for selecting a user
         self.user_var = tk.StringVar(self)
-        self.user_dropdown_combobox = ttk.Combobox(self, textvariable=self.user_var, values=view.ChatView.get_user_list)
+        self.user_dropdown_combobox = ttk.Combobox(self, textvariable=self.user_var, values=parent.get_user_list)
         # I think we're gonna want to set the state to readonly right off the bat
         # I'm not sure if we'll be able to select a user if its readonly just yet, so this may need to be changed to 'normal' here.
         self.user_dropdown_combobox['state'] = 'readonly' 
@@ -149,6 +129,8 @@ class ChatPage(ttk.Frame):
     # Updates the list box that contains the online users, not the drop down menu.
     def _update_user_listbox(self, users):
         self.online_users_listbox.delete(0, tk.END)
+        print(users)
+        print(type(users))
         for user in users:
             self.online_users_listbox.insert(tk.END, user.name)
     
