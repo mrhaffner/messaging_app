@@ -54,7 +54,7 @@ class ChatView(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         # initially show the login page
-        self.show_frame(self.chat_page)
+        self.show_frame(self.log_in_page)
 
     def show_frame(self, frame: Type[tk.Frame]):
         frame = self.frames[frame]
