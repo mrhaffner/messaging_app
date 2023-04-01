@@ -24,19 +24,19 @@ class UserList(Publisher, metaclass=SingletonMeta):
         super().__init__()
         self._users = set()
 
-    def add(self, user):
+    def _add(self, user):
         if self.exists(user):
             raise ValueError("User already exists")
         self._users.add(user)
-        super().publish(self)
+        # super().publish(self)
 
-    def add_from_dto(self, user_dto):
-        self.add(User.from_dto(user_dto))
-        super().publish(self)
+    def _add_from_dto(self, user_dto):
+        self._add(User.from_dto(user_dto))
+        # super().publish(self)
 
     def add_many_from_dtos(self, user_dtos):
         for user_dto in user_dtos:
-            self.add_from_dto(user_dto)
+            self._add_from_dto(user_dto)
         super().publish(self)
 
     def remove(self, user):

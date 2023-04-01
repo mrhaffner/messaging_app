@@ -32,13 +32,11 @@ messages = MessageList()
 # session info will likely be stored on CurrentUser
 # updated CurrentUser
 def login(username, password):
-    print("login controller")
     # create user object with username
     user = User(username)
 
     #send user DTO through post
     response = session.post(f"{API_URL}/login", json=user.to_dto())
-    print(response)
     # handle repsonse code (success/failure)
     # 200 okay
     if response.status_code != 200:
@@ -46,14 +44,15 @@ def login(username, password):
 
     try:
         sio.connect(API_URL)
+        # sio.register_namespace(MyCustomNamespace(username))
+        # sio.emit('join', user.name)
+        # sio.namespace = user.name
     except Exception as e:
         print(e)
         return False
 
     #update current user
     currentUser.add(user, session)
-    print(currentUser.user)
-    print(currentUser.exists())
     return True
     """
     #https://stackoverflow.com/questions/50412530/python-multi-threading-spawning-n-concurrent-threads
@@ -70,13 +69,27 @@ def login(username, password):
 
 # accepts message from server
 # adds message to model
-# It comes in as a DTO, right?
-@sio.event
+# for group messages
+@sio.on("message_out")
 def message_in(message_dto):
+    print("message_out")
+    print(message_dto)
+    print(type(message_dto))
     messages.add(Message.from_dto(message_dto))
 
+
+# for direct messages
+@sio.event(namespace=currentUser._user.name)
+def direct_message_in(message_dto):
+    print("direct message")
+    print(message_dto)
+    print(type(message_dto))
+    messages.add(Message.from_dto(message_dto))
+
+
+
 #updating client user list to match what the server sends it
-@sio.event
+@sio.on("user_change")
 def user_change(user_list_dto):
     #user list remove all
     users.remove_all_users()
@@ -100,11 +113,11 @@ def logout():
     return True
 
 # sends message via SocketIO "message_out" event
-def send_message(text, reciever):
+def send_message(text, receiver):
     #check if message is not empty
     if text != "":
         #send message to server
-        sio.emit('message', Message.to_dto(Message(text, currentUser, reciever)))
+        sio.emit('message_out', Message(text, currentUser._user, receiver).to_dto())
 
 
 # reconnect via websockets

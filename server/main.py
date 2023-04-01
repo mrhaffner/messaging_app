@@ -25,7 +25,7 @@ def login():
 def logout():
     UserList.remove_by_username(session["username"])
     session.pop("username", None)
-    emit('user_change', UserList.to_dto())
+    emit('user_change', UserList.to_dto(), broadcast=True)
     return "Success", 200
 
 
@@ -37,12 +37,16 @@ def logout():
 # emits to "message_in" event
 
 @socketio.on('message_out')
-def messageout(sender, receiver):
-    if User.from_dto(receiver).name == "group":
-        emit("message_out", Message.to_dto())
+def messageout(message_dto):
+    message = Message.from_dto(message_dto)
+    if message.receiver.name == "group":
+        emit("message_out", message.to_dto(), broadcast=True)
     else:
-        emit('message_out', Message.to_dto(), namespace=User.from_dto(sender).name)
-        emit('message_out', Message.to_dto(), namespace=User.from_dto(receiver).name)
+        emit('direct_message', message.to_dto(), namespace=message.sender.name) # ??????
+        emit('direct_message', message.to_dto(), namespace=message.receiver.name) # ??????
+        # emit("message_out", message.to_dto(), broadcast=True)
+
+
         
     
 
@@ -53,7 +57,7 @@ def messageout(sender, receiver):
 def disconnect():
     UserList.remove_by_username(session["username"])
     session.pop("username", None)
-    emit('user_change', UserList.to_dto())
+    emit('user_change', UserList.to_dto(), broadcast=True)
 
 
 # needs to handle when a User first connects via SocketIO
@@ -63,8 +67,7 @@ def disconnect():
 def connect():
     if session.get('username') is not None:
         users.add(User(session.get('username')))
-        print(users.to_dto())
-        emit('user_change', users.to_dto())
+        emit('user_change', users.to_dto(), broadcast=True)
     else:
         return False
     

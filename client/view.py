@@ -74,7 +74,6 @@ class ChatView(tk.Tk):
     # TODO: Error handling
     # TODO: Talk about the return type of login and what I should do with it within this method
     def log_in(self, user_name, password):
-        print("log_in view")
         controller.login(user_name, password) # returns a boolean value, not sure if I should be doing anything with that
 
      # TODO: Error handling
@@ -101,5 +100,5 @@ class ChatView(tk.Tk):
         elif isinstance(publisher, MessageList):
             # Update message list in chat page
             chat_page = self.frames[self.chat_page]
-            chat_page.update_message_list(publisher.get_all())
+            chat_page._update_message_list_entries(publisher.get_all())
             

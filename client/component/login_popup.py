@@ -54,7 +54,6 @@ class LoginPopup(ttk.Frame):
         password = self.passwordEntry.get()
 
         if (user_name != self.USERNAME_TEXT and password != self.PASSWORD_TEXT):
-            print("popup")
             self.view.log_in(user_name, password)
             # if view.ChatView.log_in(user_name, password):
             #     # Switch page to ChatPage

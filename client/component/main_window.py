@@ -78,6 +78,7 @@ class ChatPage(ttk.Frame):
         # Disable the list box
         self.online_users_listbox.config(state='disabled')
 
+
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   BINDINGS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -111,7 +112,7 @@ class ChatPage(ttk.Frame):
         user_name = self.user_dropdown_combobox.get()
 
         if message:
-            view.ChatView.send_message(message, user_name)
+            self.parent.send_message(message, user_name)
             # Enable the chatbox to insert the message
             self.scrolled_text_chatbox.config(state='normal')
             # Add message to chatbox
@@ -124,20 +125,21 @@ class ChatPage(ttk.Frame):
     # TODO: Error handling
     # TODO: Provide other means for the user to log out besides hitting the log out button
     def _logout(self):
-        view.ChatView.log_out()
+        self.parent.log_out()
     
     # Updates the list box that contains the online users, not the drop down menu.
     def _update_user_listbox(self, users):
+        self.online_users_listbox.config(state='normal')
         self.online_users_listbox.delete(0, tk.END)
-        print(users)
-        print(type(users))
         for user in users:
             self.online_users_listbox.insert(tk.END, user.name)
+        self.online_users_listbox.config(state='disabled')
+        
     
     # Updates the drop down menu of users that the user can select to send messages to. 
     def _update_user_dropdown_combobox(self, users):
         self.user_dropdown_combobox['state'] = 'normal'
-        self.user_dropdown_combobox.configure(values=[user.name for user in users])
+        self.user_dropdown_combobox.configure(values=["group"] + [user.name for user in users])
         self.user_dropdown_combobox['state'] = 'readonly'
     
     # Updates the list of message entries in the chat room. 
@@ -145,5 +147,5 @@ class ChatPage(ttk.Frame):
         self.scrolled_text_chatbox.config(state='normal')
         self.scrolled_text_chatbox.delete('1.0', tk.END)
         for message in messages:
-            self.scrolled_text_chatbox.insert(tk.END, message + '\n')
+            self.scrolled_text_chatbox.insert(tk.END, message.text + '\n')
         self.scrolled_text_chatbox.config(state='disabled')
