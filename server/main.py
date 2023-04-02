@@ -21,12 +21,12 @@ def login():
 
 # logout route - http POST
 # emits to "user_change" event
-@app.route("/logout", methods=['POST'])
-def logout():
-    UserList.remove_by_username(session["username"])
-    session.pop("username", None)
-    emit('user_change', UserList.to_dto(), broadcast=True)
-    return "Success", 200
+# @app.route("/logout", methods=['POST'])
+# def logout():
+#     users.remove_by_username(session["username"])
+#     session.pop("username", None)
+#     emit('user_change', users.to_dto(), broadcast=True)
+#     return "Success", 200
 
 
 
@@ -39,10 +39,11 @@ def logout():
 @socketio.on('message_out')
 def messageout(message_dto):
     message = Message.from_dto(message_dto)
-    print(message)
     if message.receiver.name == "group":
+        message.type = "PM"
         emit("message_out", message.to_dto(), broadcast=True)
     else:
+        message.type = "DM"
         receiver_sid = users.get_sid_by_name(message.receiver.name)
         sender_sid = users.get_sid_by_name(message.sender.name)
         emit('message_out', message.to_dto(), room=receiver_sid)
@@ -54,9 +55,9 @@ def messageout(message_dto):
 #maybe?
 @socketio.on('disconnect')
 def disconnect():
-    UserList.remove_by_username(session["username"])
+    users.remove_by_username(session["username"])
     session.pop("username", None)
-    emit('user_change', UserList.to_dto(), broadcast=True)
+    emit('user_change', users.to_dto(), broadcast=True)
 
 
 # needs to handle when a User first connects via SocketIO

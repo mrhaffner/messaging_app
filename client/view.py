@@ -60,10 +60,14 @@ class ChatView(tk.Tk):
         frame.tkraise()
     
     # TODO: Error handling
-    def send_message(self, message, user_name):
-        user = self.user_list.get_by_name(user_name) # returns user or None
-        if user is None:
+    def send_message(self, message, username):
+        if username == "":
+            return
+        elif username == "group":
             user = User("group")
+        else:
+            user = self.user_list.get_by_name(username) # returns user or None
+
         controller.send_message(message, user)
     
     # TODO: Error handling
@@ -82,9 +86,9 @@ class ChatView(tk.Tk):
 
     # takes in an object and updates the view
     def publish(self, publisher):
+        chat_page = self.frames[self.chat_page]
         if isinstance(publisher, UserList):
             # Update user list in chat page
-            chat_page = self.frames[self.chat_page]
             chat_page._update_user_listbox(publisher.get_all())
             chat_page._update_user_dropdown_combobox(publisher.get_all())
         elif isinstance(publisher, CurrentUser):
@@ -92,13 +96,14 @@ class ChatView(tk.Tk):
             is either going to the log in screen or the main window '''
             # check if there is a current user and if so, then switch the screen to chat page.
             if publisher.exists():
+                self.user_list.current_user = self.current_user._user
+                chat_page._update_current_user_label(self.current_user._user.name)
                 self.show_frame(self.chat_page)
             # else show the login page
             else: 
-                log_in_page = self.frames[self.log_in_page]
-                self.show_frame(log_in_page)
+                self.user_list.current_user = None
+                self.show_frame(self.log_in_page)
         elif isinstance(publisher, MessageList):
             # Update message list in chat page
-            chat_page = self.frames[self.chat_page]
             chat_page._update_message_list_entries(publisher.get_all())
             

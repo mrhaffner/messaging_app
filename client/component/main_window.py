@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, scrolledtext
-import view
+
 
 
 # displays the other items in this file
@@ -43,6 +43,7 @@ class ChatPage(ttk.Frame):
 
         # Create scrolledtext widget
         self.chatbox_scrolled_text = scrolledtext.ScrolledText(self, wrap='word')
+        self.chatbox_scrolled_text.tag_config('DM', foreground='blue')
 
         # Create input area
         self.entry = ttk.Entry(self, style='Custom.TEntry')
@@ -52,7 +53,7 @@ class ChatPage(ttk.Frame):
         self.logout_button = ttk.Button(self, text="Log out", command=self._logout) 
 
         # TODO: Pass a method to 'text' parameter to dynamically show client side username
-        self.current_user_label = ttk.Label(self, text="Current User", font=('Arial', '10', 'bold'))
+        self.current_user_label = ttk.Label(self, text="@", font=('Arial', '10', 'bold'))
 
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   GRID CONFIGURATIONS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -159,5 +160,13 @@ class ChatPage(ttk.Frame):
         self.chatbox_scrolled_text.config(state='normal')
         self.chatbox_scrolled_text.delete('1.0', tk.END)
         for message in messages:
-            self.chatbox_scrolled_text.insert(tk.END, message.text + '\n')
+            text = f"[{message.sender.name}] {message.text}\n"
+            if message.type == "DM":
+                self.chatbox_scrolled_text.insert(tk.END, text, "DM")
+            else:
+                self.chatbox_scrolled_text.insert(tk.END, text)
         self.chatbox_scrolled_text.config(state='disabled')
+
+    # Updates current user label
+    def _update_current_user_label(self, username):
+        self.current_user_label.config(text="@" + username)

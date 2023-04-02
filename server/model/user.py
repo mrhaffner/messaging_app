@@ -1,6 +1,6 @@
 import json
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 
 from .shared import SingletonMeta
 
@@ -8,7 +8,7 @@ from .shared import SingletonMeta
 @dataclass(frozen=True)
 class User:
     name: str
-    sid: int = None
+    sid: int  = field(compare=False, default=None)
 
     def to_dto(self):
         self_dict = asdict(self)

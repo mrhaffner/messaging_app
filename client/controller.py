@@ -89,8 +89,9 @@ def user_change(user_list_dto):
 # ends SocketIO connection
 # sets the CurrentUser to "none" state - (to be defined)
 def logout():
-    session.post(url=f"{API_URL}/logout")
-
+    # session.post(url=f"{API_URL}/logout")
+    # print(response.status_code)
+    # if response.
     # ends SocketIO connection
     sio.disconnect()
 
@@ -102,7 +103,7 @@ def logout():
 # sends message via SocketIO "message_out" event
 def send_message(text, receiver):
     #check if message is not empty
-    if text != "":
+    if text != "" or receiver.name != "":
         #send message to server
         sio.emit('message_out', Message(text, currentUser._user, receiver).to_dto())
 
