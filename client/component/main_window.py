@@ -73,7 +73,6 @@ class ChatPage(ttk.Frame):
         self.send_button.grid(row=2, column=3, sticky="nwe", padx=10, pady=5)
         self.user_dropdown_combobox.grid(row=2, column=3, sticky="sew", padx=10, pady=5)
 
-
         # --------------------- {{  ORIGINAL GRID CONFIG  }} -----------------------------
         # self.online_users_label.grid(row=0, column=2, sticky="w", padx=10, pady=2)\
         # self.online_users_listbox.grid(row=1, column=2, sticky="nsew", padx=10)
