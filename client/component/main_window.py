@@ -56,9 +56,8 @@ class ChatPage(ttk.Frame):
 
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   GRID CONFIGURATIONS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
+        ###~~~~~~~~~  There are 3 three rows and 4 columns within the chat page.  ~~~~~~~~~~~###
 
-        # ------  There are 3 three rows and 4 columns within the chat page. -------
         # ROW 0
         self.chat_room_label.grid(row=0, column=0, sticky="w", padx=10, pady=2)
         self.current_user_label.grid(row=0, column=1, sticky="e", padx=10, pady=2)
