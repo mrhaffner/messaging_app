@@ -39,15 +39,14 @@ def logout():
 @socketio.on('message_out')
 def messageout(message_dto):
     message = Message.from_dto(message_dto)
+    print(message)
     if message.receiver.name == "group":
         emit("message_out", message.to_dto(), broadcast=True)
     else:
-        emit('direct_message', message.to_dto(), namespace=message.sender.name) # ??????
-        emit('direct_message', message.to_dto(), namespace=message.receiver.name) # ??????
-        # emit("message_out", message.to_dto(), broadcast=True)
-
-
-        
+        receiver_sid = users.get_sid_by_name(message.receiver.name)
+        sender_sid = users.get_sid_by_name(message.sender.name)
+        emit('message_out', message.to_dto(), room=receiver_sid)
+        emit('message_out', message.to_dto(), room=sender_sid)
     
 
 # needs to handle when a User disconnects from SocketIO (seperate from logout)
@@ -66,7 +65,7 @@ def disconnect():
 @socketio.on('connect')
 def connect():
     if session.get('username') is not None:
-        users.add(User(session.get('username')))
+        users.add(User(session.get('username'), request.sid))
         emit('user_change', users.to_dto(), broadcast=True)
     else:
         return False

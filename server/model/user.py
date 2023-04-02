@@ -8,8 +8,11 @@ from .shared import SingletonMeta
 @dataclass(frozen=True)
 class User:
     name: str
+    sid: int = None
 
     def to_dto(self):
+        self_dict = asdict(self)
+        del self_dict['sid']
         return json.dumps(asdict(self))
 
     @staticmethod
@@ -43,3 +46,9 @@ class UserList(metaclass=SingletonMeta):
 
     def to_dto(self):
         return [user.to_dto() for user in self._users]
+    
+    def get_sid_by_name(self, name):
+        for user in self._users:
+            if user.name == name:
+                print(user)
+                return user.sid

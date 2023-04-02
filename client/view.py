@@ -11,9 +11,8 @@
 import tkinter as tk
 from component.main_window import ChatPage
 from component.login_popup import LoginPopup
-from model.user import CurrentUser, UserList
+from model.user import CurrentUser, User, UserList
 from model.message import MessageList
-from typing import Type
 import controller
 
 class ChatView(tk.Tk):
@@ -63,8 +62,9 @@ class ChatView(tk.Tk):
     # TODO: Error handling
     def send_message(self, message, user_name):
         user = self.user_list.get_by_name(user_name) # returns user or None
-        if user != None:
-            controller.send_message(message, user)
+        if user is None:
+            user = User("group")
+        controller.send_message(message, user)
     
     # TODO: Error handling
     # TODO: Should I do anything about the boolean return value from controller.logout()?

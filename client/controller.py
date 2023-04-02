@@ -69,23 +69,10 @@ def login(username, password):
 
 # accepts message from server
 # adds message to model
-# for group messages
+# for messages
 @sio.on("message_out")
 def message_in(message_dto):
-    print("message_out")
-    print(message_dto)
-    print(type(message_dto))
     messages.add(Message.from_dto(message_dto))
-
-
-# for direct messages
-@sio.event(namespace=currentUser._user.name)
-def direct_message_in(message_dto):
-    print("direct message")
-    print(message_dto)
-    print(type(message_dto))
-    messages.add(Message.from_dto(message_dto))
-
 
 
 #updating client user list to match what the server sends it

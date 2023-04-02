@@ -126,12 +126,13 @@ class ChatPage(ttk.Frame):
         if message:
             self.parent.send_message(message, user_name)
             # Enable the chatbox to insert the message
-            self.chatbox_scrolled_text.config(state='normal')
-            # Add message to chatbox
-            self.chatbox_scrolled_text.insert(tk.END, f"{message}\n")
-            # Disable the chat box
-            self.chatbox_scrolled_text.config(state='disable')
-            self.entry.delete('0', 'end')
+            # self.scrolled_text_chatbox.config(state='normal')
+            # # Add message to chatbox
+            # self.scrolled_text_chatbox.insert(tk.END, f"{message}\n")
+            # # Disable the chat box
+            # self.scrolled_text_chatbox.config(state='disable')
+            # self.entry.delete('0', 'end')
+
         return "break" # prevents the default behavior of the "Return"
     
     # TODO: Error handling
