@@ -1,3 +1,4 @@
+import pickle
 from flask import Flask, request, session
 from flask_socketio import SocketIO, emit
 from model.message import Message
@@ -7,17 +8,47 @@ app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 socketio = SocketIO(app)
 
+#users that are online
 users = UserList()
+
+#need to populate this upon server startup
+all_users = []
+
+# login route - http POST
+# create a User session which will allow one to connect via websockets
+@app.route("/create_account", methods=['POST'])
+def create_account():
+    data = request.json
+
+    new_user = User.from_dto(data)
+
+    #cannot have username of "group"
+    if new_user.name == "group":
+        return "Invalid Credentials", 401
+
+    all_users.append(new_user)
+
+    #save to file
+    with open('all_users.pickle', 'wb') as f:
+        pickle.dump(all_users, f)
+    f.close()
+
+    return "Success", 200
 
 # login route - http POST
 # create a User session which will allow one to connect via websockets
 @app.route("/login", methods=['POST'])
 def login():
     data = request.json
-    # hopefully works - test
-    session['username'] = User.from_dto(data).name
-    return "Success", 200
+    user_login = User.from_dto(data)
 
+    # first need to check if account exists
+    for user in all_users:
+        if user.name == user_login.name and user.password == user_login.password:
+            session['username'] = user_login.name
+            return "Success", 200
+
+    return "Invalid Credentials", 401
 
 # logout route - http POST
 # emits to "user_change" event
@@ -66,13 +97,25 @@ def disconnect():
 @socketio.on('connect')
 def connect():
     if session.get('username') is not None:
-        users.add(User(session.get('username'), request.sid))
+        users.add(User(session.get('username'), session.get('password'), request.sid))
         emit('user_change', users.to_dto(), broadcast=True)
     else:
         return False
     
 
 def main():
+    global all_users
+    #populate all_users before server starts
+    try:
+        with open('all_users.pickle', 'rb') as f:
+            all_users = pickle.load(f)
+    except:
+    #create empty file if cannot read file for whatever reason
+        with open('all_users.pickle', 'wb') as f:
+            pickle.dump(all_users, f)
+
+    f.close()
+
     socketio.run(app)
 
 if __name__ == "__main__":

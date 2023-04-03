@@ -26,6 +26,21 @@ currentUser = CurrentUser()
 users = UserList()
 messages = MessageList()
 
+# sends account creation details to server so it can save the new account
+def create_account(username, password):
+    # create user object with username
+    user = User(username, password)
+
+    #send user DTO through post
+    response = session.post(f"{API_URL}/create_account", json=user.to_dto())
+
+    # handle repsonse code (success/failure)
+    # 200 okay
+    if response.status_code != 200:
+        return False
+    
+    return True
+
 # sends login POST request to server
 # probably spawns a thread to handle/wait for response
 # connects via SocketIO after succesful login
@@ -33,7 +48,7 @@ messages = MessageList()
 # updated CurrentUser
 def login(username, password):
     # create user object with username
-    user = User(username)
+    user = User(username, password)
 
     #send user DTO through post
     response = session.post(f"{API_URL}/login", json=user.to_dto())
@@ -54,18 +69,6 @@ def login(username, password):
     #update current user
     currentUser.add(user, session)
     return True
-    """
-    #https://stackoverflow.com/questions/50412530/python-multi-threading-spawning-n-concurrent-threads
-    #https://stackoverflow.com/questions/15085348/what-is-the-use-of-join-in-threading
-    #spawn threads for message_in and user_change
-    thread = Thread(target = message_in)
-    thread.start()
-    thread.join()
-
-    thread = Thread(target = user_change)
-    thread.start()
-    thread.join()
-    """
 
 # accepts message from server
 # adds message to model

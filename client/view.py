@@ -11,6 +11,7 @@
 import tkinter as tk
 from component.main_window import ChatPage
 from component.login_popup import LoginPopup
+from component.create_account_popup import CreateAccountPopup
 from model.user import CurrentUser, User, UserList
 from model.message import MessageList
 import controller
@@ -44,7 +45,8 @@ class ChatView(tk.Tk):
         # Assign ChatPage and LogInPage classes to instance variables
         self.chat_page = ChatPage
         self.log_in_page = LoginPopup
-        self.pages = (self.chat_page, self.log_in_page)
+        self.create_account_page = CreateAccountPopup
+        self.pages = (self.chat_page, self.log_in_page, self.create_account_page)
         # Loop through the frames and create instances of each
         for TtkFrame in self.pages:
             frame = TtkFrame(self, parent) 
@@ -69,7 +71,18 @@ class ChatView(tk.Tk):
             user = self.user_list.get_by_name(username) # returns user or None
 
         controller.send_message(message, user)
-    
+        
+    def show_create_account(self):
+        # We are not updating anything in the model or using a controller yet,
+        # all we want to do is switch a page
+        self.show_frame(self.create_account_page)
+
+    def send_new_account(self, user_name, password):
+        controller.create_account(user_name, password)
+        # Still not updating anything on the client side so I am not sure how
+        # to switch frames like it was done in other view methods
+        self.show_frame(self.log_in_page)
+
     # TODO: Error handling
     # TODO: Should I do anything about the boolean return value from controller.logout()?
     def log_out(self):

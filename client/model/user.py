@@ -7,6 +7,8 @@ from .shared import Publisher, SingletonMeta
 @dataclass(frozen=True)
 class User:
     name: str
+    #set default value for things that do not need password (sending messages)
+    password: str = None
 
     def to_dto(self):
         return json.dumps(asdict(self))
@@ -14,7 +16,8 @@ class User:
     @staticmethod
     def from_dto(dto):
         user_dict = json.loads(dto)
-        return User(user_dict['name'])
+        print(user_dict)
+        return User(user_dict['name'], user_dict['password'])
 
 
 # code reuse ?

@@ -8,6 +8,7 @@ from .shared import SingletonMeta
 @dataclass(frozen=True)
 class User:
     name: str
+    password: str 
     sid: int  = field(compare=False, default=None)
 
     def to_dto(self):
@@ -18,7 +19,7 @@ class User:
     @staticmethod
     def from_dto(dto):
         user_dict = json.loads(dto)
-        return User(user_dict['name'])
+        return User(user_dict['name'], user_dict['password'])
 
 
 # code reuse ?
@@ -36,7 +37,10 @@ class UserList(metaclass=SingletonMeta):
         self.add(User.from_dto(user_dto))
 
     def remove_by_username(self, username):
-        self._users.discard(User(username))
+        for user in self._users:
+            if user.name == username:
+                self._users.discard(user)
+                break
 
     def exists(self, user):
         return user in self._users
