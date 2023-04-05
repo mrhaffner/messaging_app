@@ -1,15 +1,14 @@
 import json
+import pickle
 
 from dataclasses import asdict, dataclass, field
 
-from .shared import SingletonMeta
 
-
-@dataclass(frozen=True)
+@dataclass(unsafe_hash=True)
 class User:
     name: str
-    password: str 
-    sid: int  = field(compare=False, default=None)
+    password: str = field(compare=False)
+    sid: int = field(compare=False, default=None)
 
     def to_dto(self):
         self_dict = asdict(self)
@@ -23,15 +22,24 @@ class User:
 
 
 # code reuse ?
-class UserList(metaclass=SingletonMeta):
+class UserList():
 
     def __init__(self):
         self._users = set()
 
     def add(self, user):
-        if self.exists(user):
+        if self.exists(user) or user.password is None or user.password == "":
             raise ValueError("User already exists")
+        elif user.password is None or user.password == "":
+            raise ValueError("Invalid Password")
+        elif user.name == "" or user.name is None or user.name.lower() == "group":
+            raise ValueError("Invalid Password")
         self._users.add(user)
+
+        with open('users.pickle', 'wb') as f:
+            users = UserList()
+            users._users = {User(user.name, user.password) for user in self._users}
+            pickle.dump(users, f)
 
     def add_from_dto(self, user_dto):
         self.add(User.from_dto(user_dto))
@@ -49,10 +57,9 @@ class UserList(metaclass=SingletonMeta):
         return list(self._users)
 
     def to_dto(self):
-        return [user.to_dto() for user in self._users]
+        return [user.to_dto() for user in self._users if user.sid is not None]
     
-    def get_sid_by_name(self, name):
+    def get_user_by_name(self, name):
         for user in self._users:
             if user.name == name:
-                print(user)
-                return user.sid
+                return user

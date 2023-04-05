@@ -8,30 +8,16 @@ app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 socketio = SocketIO(app)
 
-#users that are online
-users = UserList()
 
-#need to populate this upon server startup
-all_users = []
-
-# login route - http POST
-# create a User session which will allow one to connect via websockets
 @app.route("/create_account", methods=['POST'])
 def create_account():
     data = request.json
-
     new_user = User.from_dto(data)
 
-    #cannot have username of "group"
-    if new_user.name == "group":
+    try:
+        users.add(new_user)
+    except ValueError:
         return "Invalid Credentials", 401
-
-    all_users.append(new_user)
-
-    #save to file
-    with open('all_users.pickle', 'wb') as f:
-        pickle.dump(all_users, f)
-    f.close()
 
     return "Success", 200
 
@@ -43,12 +29,13 @@ def login():
     user_login = User.from_dto(data)
 
     # first need to check if account exists
-    for user in all_users:
-        if user.name == user_login.name and user.password == user_login.password:
-            session['username'] = user_login.name
-            return "Success", 200
+    user = users.get_user_by_name(user_login.name)
+    if not user or user.password != user_login.password:
+        return "Invalid Credentials", 401
 
-    return "Invalid Credentials", 401
+    session['username'] = user_login.name
+    return "Success", 200
+
 
 # logout route - http POST
 # emits to "user_change" event
@@ -75,8 +62,8 @@ def messageout(message_dto):
         emit("message_out", message.to_dto(), broadcast=True)
     else:
         message.type = "DM"
-        receiver_sid = users.get_sid_by_name(message.receiver.name)
-        sender_sid = users.get_sid_by_name(message.sender.name)
+        receiver_sid = users.get_user_by_name(message.receiver.name).sid
+        sender_sid = users.get_user_by_name(message.sender.name).sid
         emit('message_out', message.to_dto(), room=receiver_sid)
         emit('message_out', message.to_dto(), room=sender_sid)
     
@@ -97,26 +84,21 @@ def disconnect():
 @socketio.on('connect')
 def connect():
     if session.get('username') is not None:
-        users.add(User(session.get('username'), session.get('password'), request.sid))
+        user = users.get_user_by_name(session.get('username'))
+        user.sid = request.sid
         emit('user_change', users.to_dto(), broadcast=True)
     else:
         return False
     
 
-def main():
-    global all_users
-    #populate all_users before server starts
+if __name__ == "__main__":
     try:
-        with open('all_users.pickle', 'rb') as f:
-            all_users = pickle.load(f)
+        with open('users.pickle', 'rb') as f:
+            users = pickle.load(f)
     except:
     #create empty file if cannot read file for whatever reason
-        with open('all_users.pickle', 'wb') as f:
-            pickle.dump(all_users, f)
-
-    f.close()
+        with open('users.pickle', 'wb') as f:
+            users = UserList()
+            pickle.dump(users, f)
 
     socketio.run(app)
-
-if __name__ == "__main__":
-    main()

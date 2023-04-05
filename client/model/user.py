@@ -16,7 +16,6 @@ class User:
     @staticmethod
     def from_dto(dto):
         user_dict = json.loads(dto)
-        print(user_dict)
         return User(user_dict['name'], user_dict['password'])
 
 
