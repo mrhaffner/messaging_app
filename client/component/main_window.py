@@ -1,27 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, scrolledtext
-import view
-
-# contains a dropdown of users to message (default is group)
-# contains an input box for your message to send
-# contains a button to send the message
-class MessageBar(tk.Frame):
-    pass
 
 
-# displays a list of all users currently online that aren't you
-class ActiveUsers(tk.Frame):
-    pass
-
-
-# displays the title, your username, and a logout button
-class TitleBar(tk.Frame):
-    pass
-
-
-# displays all the messages in chat
-class MessageList(tk.Frame):
-    pass
 
 # displays the other items in this file
 class ChatPage(ttk.Frame):
@@ -49,7 +29,7 @@ class ChatPage(ttk.Frame):
 
         # Create dropdown menu for selecting a user
         self.user_var = tk.StringVar(self)
-        self.user_dropdown_combobox = ttk.Combobox(self, textvariable=self.user_var, values=view.ChatView.get_user_list)
+        self.user_dropdown_combobox = ttk.Combobox(self, textvariable=self.user_var, values=parent.get_user_list)
         # I think we're gonna want to set the state to readonly right off the bat
         # I'm not sure if we'll be able to select a user if its readonly just yet, so this may need to be changed to 'normal' here.
         self.user_dropdown_combobox['state'] = 'readonly' 
@@ -62,34 +42,49 @@ class ChatPage(ttk.Frame):
         self.send_button = ttk.Button(self, text="Send", command=self._send_message)
 
         # Create scrolledtext widget
-        self.scrolled_text_chatbox = scrolledtext.ScrolledText(self, wrap='word')
+        self.chatbox_scrolled_text = scrolledtext.ScrolledText(self, wrap='word')
+        self.chatbox_scrolled_text.tag_config('DM', foreground='blue')
 
         # Create input area
         self.entry = ttk.Entry(self, style='Custom.TEntry')
         self.entry.insert(0, self.ENTER_TEXT_HERE)
 
         # Create logout button 
-        self.logout_button = ttk.Button(self, text="Log Out", command=self._logout) 
+        self.logout_button = ttk.Button(self, text="Log out", command=self._logout) 
+
+        # TODO: Pass a method to 'text' parameter to dynamically show client side username
+        self.current_user_label = ttk.Label(self, text="@", font=('Arial', '10', 'bold'))
 
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   GRID CONFIGURATIONS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        self.online_users_label.grid(row=0, column=2, sticky="w", padx=10, pady=2)
+        ###~~~~~~~~~  There are 3 three rows and 4 columns within the chat page.  ~~~~~~~~~~~###
 
-        self.online_users_listbox.grid(row=1, column=2, sticky="nsew", padx=10)
-
+        # ROW 0
         self.chat_room_label.grid(row=0, column=0, sticky="w", padx=10, pady=2)
+        self.current_user_label.grid(row=0, column=1, sticky="e", padx=10, pady=2)
+        self.logout_button.grid(row=0, column=2, sticky="e", padx=10, pady=2)
+        self.online_users_label.grid(row=0, column=3, sticky="w", padx=10, pady=2)
 
-        self.scrolled_text_chatbox.grid(row=1, column=0, rowspan=1, columnspan=2, sticky="nsew", padx=10)
-        self.scrolled_text_chatbox.config(state='disabled')
+        # ROW 1
+        self.chatbox_scrolled_text.grid(row=1, column=0, rowspan=1, columnspan=3, sticky="nsew", padx=10)
+        self.online_users_listbox.grid(row=1, column=3, sticky="nsew", padx=10)
 
-        self.user_dropdown_combobox.grid(row=2, column=2, sticky="sew", padx=10, pady=5)
+        # ROW 2
+        self.entry.grid(row=2, column=0, columnspan=3, sticky="nsew", padx=10, pady=10)
+        self.send_button.grid(row=2, column=3, sticky="nwe", padx=10, pady=5)
+        self.user_dropdown_combobox.grid(row=2, column=3, sticky="sew", padx=10, pady=5)
 
-        self.entry.grid(row=2, column=0, columnspan=2, sticky="nsew", padx=10, pady=10)
-
-        self.send_button.grid(row=2, column=2, sticky="nwe", padx=10, pady=5)
-
-        self.logout_button.place(relx=0.77, rely=0, anchor="ne")
+        # --------------------- {{  ORIGINAL GRID CONFIG  }} -----------------------------
+        # self.online_users_label.grid(row=0, column=2, sticky="w", padx=10, pady=2)\
+        # self.online_users_listbox.grid(row=1, column=2, sticky="nsew", padx=10)
+        # self.chat_room_label.grid(row=0, column=0, sticky="w", padx=10, pady=2)
+        # self.current_user_label.grid(row=0, column=0, sticky="w", padx=10, pady=2)
+        # self.scrolled_text_chatbox.grid(row=1, column=0, rowspan=1, columnspan=2, sticky="nsew", padx=10)
+        # self.scrolled_text_chatbox.config(state='disabled')
+        # self.user_dropdown_combobox.grid(row=2, column=2, sticky="sew", padx=10, pady=5)
+        # self.entry.grid(row=2, column=0, columnspan=2, sticky="nsew", padx=10, pady=10)
+        # self.send_button.grid(row=2, column=2, sticky="nwe", padx=10, pady=5)
+        # self.logout_button.place(relx=0.77, rely=0, anchor="ne")
 
         # Configure grid weights
         self.columnconfigure(1, weight=1)
@@ -117,7 +112,6 @@ class ChatPage(ttk.Frame):
             self.entry.insert(0, self.ENTER_TEXT_HERE)
 
     # TODO: Error handling
-    # TODO: Implement logic so that the chatbox can be disabled after sending a message
     # Event handler for sending a message
     def _send_message(self, event=None):
         # Get message from input area
@@ -131,37 +125,48 @@ class ChatPage(ttk.Frame):
         user_name = self.user_dropdown_combobox.get()
 
         if message:
-            view.ChatView.send_message(message, user_name)
+            self.parent.send_message(message, user_name)
             # Enable the chatbox to insert the message
-            self.scrolled_text_chatbox.config(state='normal')
-            # Add message to chatbox
-            self.scrolled_text_chatbox.insert(tk.END, f"{message}\n")
-            # Disable the chat box
-            self.scrolled_text_chatbox.config(state='disable')
-            self.entry.delete('0', 'end')
+            # self.scrolled_text_chatbox.config(state='normal')
+            # # Add message to chatbox
+            # self.scrolled_text_chatbox.insert(tk.END, f"{message}\n")
+            # # Disable the chat box
+            # self.scrolled_text_chatbox.config(state='disable')
+            # self.entry.delete('0', 'end')
+
         return "break" # prevents the default behavior of the "Return"
     
     # TODO: Error handling
     # TODO: Provide other means for the user to log out besides hitting the log out button
     def _logout(self):
-        view.ChatView.log_out()
+        self.parent.log_out()
     
     # Updates the list box that contains the online users, not the drop down menu.
     def _update_user_listbox(self, users):
+        self.online_users_listbox.config(state='normal')
         self.online_users_listbox.delete(0, tk.END)
         for user in users:
             self.online_users_listbox.insert(tk.END, user.name)
+        self.online_users_listbox.config(state='disabled')
     
     # Updates the drop down menu of users that the user can select to send messages to. 
     def _update_user_dropdown_combobox(self, users):
         self.user_dropdown_combobox['state'] = 'normal'
-        self.user_dropdown_combobox.configure(values=[user.name for user in users])
+        self.user_dropdown_combobox.configure(values=["group"] + [user.name for user in users])
         self.user_dropdown_combobox['state'] = 'readonly'
     
     # Updates the list of message entries in the chat room. 
     def _update_message_list_entries(self, messages):
-        self.scrolled_text_chatbox.config(state='normal')
-        self.scrolled_text_chatbox.delete('1.0', tk.END)
+        self.chatbox_scrolled_text.config(state='normal')
+        self.chatbox_scrolled_text.delete('1.0', tk.END)
         for message in messages:
-            self.scrolled_text_chatbox.insert(tk.END, message + '\n')
-        self.scrolled_text_chatbox.config(state='disabled')
+            text = f"[{message.sender.name}] {message.text}\n"
+            if message.type == "DM":
+                self.chatbox_scrolled_text.insert(tk.END, text, "DM")
+            else:
+                self.chatbox_scrolled_text.insert(tk.END, text)
+        self.chatbox_scrolled_text.config(state='disabled')
+
+    # Updates current user label
+    def _update_current_user_label(self, username):
+        self.current_user_label.config(text="@" + username)

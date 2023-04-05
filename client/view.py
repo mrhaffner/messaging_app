@@ -11,9 +11,9 @@
 import tkinter as tk
 from component.main_window import ChatPage
 from component.login_popup import LoginPopup
-from model.user import CurrentUser, UserList
+from component.create_account_popup import CreateAccountPopup
+from model.user import CurrentUser, User, UserList
 from model.message import MessageList
-from typing import Type
 import controller
 
 class ChatView(tk.Tk):
@@ -45,7 +45,8 @@ class ChatView(tk.Tk):
         # Assign ChatPage and LogInPage classes to instance variables
         self.chat_page = ChatPage
         self.log_in_page = LoginPopup
-        self.pages = (self.chat_page, self.log_in_page)
+        self.create_account_page = CreateAccountPopup
+        self.pages = (self.chat_page, self.log_in_page, self.create_account_page)
         # Loop through the frames and create instances of each
         for TtkFrame in self.pages:
             frame = TtkFrame(self, parent) 
@@ -56,16 +57,32 @@ class ChatView(tk.Tk):
         # initially show the login page
         self.show_frame(self.log_in_page)
 
-    def show_frame(self, frame: Type[tk.Frame]):
+    def show_frame(self, frame):
         frame = self.frames[frame]
         frame.tkraise()
     
     # TODO: Error handling
-    def send_message(self, message, user_name):
-        user = self.user_list.get_by_name(user_name) # returns user or None
-        if user != None:
-            controller.send_message(message, user)
-    
+    def send_message(self, message, username):
+        if username == "":
+            return
+        elif username == "group":
+            user = User("group")
+        else:
+            user = self.user_list.get_by_name(username) # returns user or None
+
+        controller.send_message(message, user)
+        
+    def show_create_account(self):
+        # We are not updating anything in the model or using a controller yet,
+        # all we want to do is switch a page
+        self.show_frame(self.create_account_page)
+
+    def send_new_account(self, user_name, password):
+        controller.create_account(user_name, password)
+        # Still not updating anything on the client side so I am not sure how
+        # to switch frames like it was done in other view methods
+        self.show_frame(self.log_in_page)
+
     # TODO: Error handling
     # TODO: Should I do anything about the boolean return value from controller.logout()?
     def log_out(self):
@@ -82,24 +99,24 @@ class ChatView(tk.Tk):
 
     # takes in an object and updates the view
     def publish(self, publisher):
+        chat_page = self.frames[self.chat_page]
         if isinstance(publisher, UserList):
             # Update user list in chat page
-            chat_page = self.frames[self.chat_page]
-            chat_page.update_user_list(publisher.get_all())
-            chat_page.update_user_dropdown_combobox(publisher.get_all())
+            chat_page._update_user_listbox(publisher.get_all())
+            chat_page._update_user_dropdown_combobox(publisher.get_all())
         elif isinstance(publisher, CurrentUser):
             ''' what this is doing in response to the CurrentUser changing
             is either going to the log in screen or the main window '''
             # check if there is a current user and if so, then switch the screen to chat page.
             if publisher.exists():
-                chat_page = self.frames[self.chat_page]
-                self.show_frame(chat_page)
+                self.user_list.current_user = self.current_user._user
+                chat_page._update_current_user_label(self.current_user._user.name)
+                self.show_frame(self.chat_page)
             # else show the login page
             else: 
-                log_in_page = self.frames[self.log_in_page]
-                self.show_frame(log_in_page)
+                self.user_list.current_user = None
+                self.show_frame(self.log_in_page)
         elif isinstance(publisher, MessageList):
             # Update message list in chat page
-            chat_page = self.frames[self.chat_page]
-            chat_page.update_message_list(publisher.get_all())
+            chat_page._update_message_list_entries(publisher.get_all())
             

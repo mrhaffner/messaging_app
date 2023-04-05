@@ -23,6 +23,23 @@ API_URL = "http://127.0.0.1:5000"
 session = requests.Session()
 sio = socketio.Client(http_session=session)
 currentUser = CurrentUser()
+users = UserList()
+messages = MessageList()
+
+# sends account creation details to server so it can save the new account
+def create_account(username, password):
+    # create user object with username
+    user = User(username, password)
+
+    #send user DTO through post
+    response = session.post(f"{API_URL}/create_account", json=user.to_dto())
+
+    # handle repsonse code (success/failure)
+    # 200 okay
+    if response.status_code != 200:
+        return False
+    
+    return True
 
 # sends login POST request to server
 # probably spawns a thread to handle/wait for response
@@ -31,11 +48,10 @@ currentUser = CurrentUser()
 # updated CurrentUser
 def login(username, password):
     # create user object with username
-    user = User(username)
+    user = User(username, password)
 
     #send user DTO through post
-    response = session.post(url=f"{API_URL}/login/{user.to_dto}")
-
+    response = session.post(f"{API_URL}/login", json=user.to_dto())
     # handle repsonse code (success/failure)
     # 200 okay
     if response.status_code != 200:
@@ -43,49 +59,42 @@ def login(username, password):
 
     try:
         sio.connect(API_URL)
-    except ConnectionRefusedError:
+        # sio.register_namespace(MyCustomNamespace(username))
+        # sio.emit('join', user.name)
+        # sio.namespace = user.name
+    except Exception as e:
+        print(e)
         return False
 
     #update current user
     currentUser.add(user, session)
-
     return True
-    """
-    #https://stackoverflow.com/questions/50412530/python-multi-threading-spawning-n-concurrent-threads
-    #https://stackoverflow.com/questions/15085348/what-is-the-use-of-join-in-threading
-    #spawn threads for message_in and user_change
-    thread = Thread(target = message_in)
-    thread.start()
-    thread.join()
-
-    thread = Thread(target = user_change)
-    thread.start()
-    thread.join()
-    """
 
 # accepts message from server
 # adds message to model
-# It comes in as a DTO, right?
-@sio.event
+# for messages
+@sio.on("message_out")
 def message_in(message_dto):
-    MessageList.add(Message.from_dto(message_dto))
+    messages.add(Message.from_dto(message_dto))
+
 
 #updating client user list to match what the server sends it
-@sio.event
+@sio.on("user_change")
 def user_change(user_list_dto):
     #user list remove all
-    UserList.remove_all_users()
+    users.remove_all_users()
 
     #user list add many from dtos
-    UserList.add_many_from_dtos(user_list_dto)
+    users.add_many_from_dtos(user_list_dto)
 
 # sends logout POST request to server
 # probably spawns a thread to handle/wait for response
 # ends SocketIO connection
 # sets the CurrentUser to "none" state - (to be defined)
 def logout():
-    session.post(url=f"{API_URL}/logout")
-
+    # session.post(url=f"{API_URL}/logout")
+    # print(response.status_code)
+    # if response.
     # ends SocketIO connection
     sio.disconnect()
 
@@ -95,11 +104,11 @@ def logout():
     return True
 
 # sends message via SocketIO "message_out" event
-def send_message(text, reciever):
+def send_message(text, receiver):
     #check if message is not empty
-    if text != "":
+    if text != "" or receiver.name != "":
         #send message to server
-        sio.emit('message', Message.to_dto(Message(text, currentUser, reciever)))
+        sio.emit('message_out', Message(text, currentUser._user, receiver).to_dto())
 
 
 # reconnect via websockets

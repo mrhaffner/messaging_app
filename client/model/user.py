@@ -7,6 +7,8 @@ from .shared import Publisher, SingletonMeta
 @dataclass(frozen=True)
 class User:
     name: str
+    #set default value for things that do not need password (sending messages)
+    password: str = None
 
     def to_dto(self):
         return json.dumps(asdict(self))
@@ -14,7 +16,7 @@ class User:
     @staticmethod
     def from_dto(dto):
         user_dict = json.loads(dto)
-        return User(user_dict['name'])
+        return User(user_dict['name'], user_dict['password'])
 
 
 # code reuse ?
@@ -23,20 +25,18 @@ class UserList(Publisher, metaclass=SingletonMeta):
     def __init__(self):
         super().__init__()
         self._users = set()
+        self.current_user = None
 
-    def add(self, user):
-        if self.exists(user):
-            raise ValueError("User already exists")
-        self._users.add(user)
-        super().publish(self)
+    def _add(self, user):
+        if user != self.current_user:
+            self._users.add(user)
 
-    def add_from_dto(self, user_dto):
-        self.add(User.from_dto(user_dto))
-        super().publish(self)
+    def _add_from_dto(self, user_dto):
+        self._add(User.from_dto(user_dto))
 
     def add_many_from_dtos(self, user_dtos):
         for user_dto in user_dtos:
-            self.add_from_dto(user_dto)
+            self._add_from_dto(user_dto)
         super().publish(self)
 
     def remove(self, user):

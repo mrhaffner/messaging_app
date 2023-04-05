@@ -3,7 +3,7 @@ from tkinter import ttk
 
 
 # displays the login form
-class LoginPopup(ttk.Frame):
+class CreateAccountPopup(ttk.Frame):
     def __init__(self, parent, container):
         super().__init__(container)
 
@@ -20,7 +20,7 @@ class LoginPopup(ttk.Frame):
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   WIDGETS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        self.label = tk.Label(self, text="Log In Page", font=('Times', '20'))
+        self.label = tk.Label(self, text="Create Account Page", font=('Times', '20'))
 
         self.usernameEntry = ttk.Entry(self)
         self.usernameEntry.insert(0, self.USERNAME_TEXT)
@@ -28,9 +28,7 @@ class LoginPopup(ttk.Frame):
         self.passwordEntry = ttk.Entry(self, show="*")
         self.passwordEntry.insert(0, self.PASSWORD_TEXT)
 
-        self.logInBtn = tk.Button(self, text="Log In", command=self._log_user_in)
-
-        self.createAccountBtn = tk.Button(self, text="New Account", command=self._create_account)
+        self.createAccountBtn = tk.Button(self, text="Create Account", command=self._create_account)
 
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   GRID CONFIGURATIONS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -38,7 +36,6 @@ class LoginPopup(ttk.Frame):
         self.label.pack(pady=50,padx=0)
         self.usernameEntry.pack(pady=10, padx=0)
         self.passwordEntry.pack(pady=10, padx=0)
-        self.logInBtn.pack(pady=10, padx=0)
         self.createAccountBtn.pack(pady=10, padx=0)
 
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -51,20 +48,11 @@ class LoginPopup(ttk.Frame):
         self.passwordEntry.bind("<FocusOut>", self._on_focusout) 
     
     def _create_account(self):
-        self.view.show_create_account()
-
-    # TODO: Error handling
-    # logs the user in after the button is clicked 
-    def _log_user_in(self):
         user_name = self.usernameEntry.get()
         password = self.passwordEntry.get()
 
         if (user_name != self.USERNAME_TEXT and password != self.PASSWORD_TEXT):
-            self.view.log_in(user_name, password)
-            # if view.ChatView.log_in(user_name, password):
-            #     # Switch page to ChatPage
-            #     chat_page = ChatPage
-            #     chat_page.tkraise() 
+            self.view.send_new_account(user_name, password)
 
     # gets rid of the "Enter text here..." when clicking into the Entry
     def _on_username_entry_click(self, event):

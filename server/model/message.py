@@ -1,7 +1,7 @@
 import json
 from dataclasses import asdict, dataclass, field
 
-from user import User
+from .user import User
 
 
 class UniqueId:
@@ -21,6 +21,7 @@ class Message:
     text: str = field(compare=False)
     sender: User = field(compare=False)
     receiver: User = field(compare=False)
+    type: str = field(compare=False, default=None)
 
     def __post_init__(self):
         self.id = UniqueId.get_id()
@@ -34,7 +35,7 @@ class Message:
         return Message(
                         message_dict['text'], 
                         User.from_dto(json.dumps(message_dict['sender'])),  # necessary?
-                        User.from_dto(json.dumps(message_dict['receiver']))  # necessary?
+                        User.from_dto(json.dumps(message_dict['receiver'])),  # necessary?
                       )
 
 

@@ -8,10 +8,11 @@ from .user import User
 
 @dataclass()
 class Message:
-    id: int = field(init=False, default=None) # default for user created
     text: str = field(compare=False)
     sender: User = field(compare=False)
     receiver: User = field(compare=False)
+    id: int = field(default=None) # default for user created
+    type: str = field(compare=False, default=None)
 
     def to_dto(self):
         return json.dumps(asdict(self)) # works with User? # remove id since it won't have one
@@ -19,12 +20,12 @@ class Message:
     @staticmethod
     def from_dto(dto):
         message_dict = json.loads(dto)
-        return Message(
-                        int(message_dict['id']),
-                        message_dict['text'], 
-                        User.from_dto(message_dict['sender']),  # necessary?
-                        User.from_dto(message_dict['receiver'])  # necessary?
-                      )
+        return Message(message_dict['text'], 
+                       User(message_dict['sender']['name']), 
+                       User(message_dict['receiver']['name']), 
+                       message_dict['id'],
+                       message_dict['type']
+                       )
 
 
 # singleton list of all messages received
