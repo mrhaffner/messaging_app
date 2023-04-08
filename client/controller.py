@@ -99,7 +99,6 @@ def logout():
     sio.disconnect()
 
     # sets the CurrentUser to "none" state - (to be defined)
-    currentUser.remove()
 
     return True
 
@@ -111,10 +110,13 @@ def send_message(text, receiver):
         sio.emit('message_out', Message(text, currentUser._user, receiver).to_dto())
 
 
-# reconnect via websockets
-def reconnect():
-    try:
-        sio.connect(API_URL)
-        return True
-    except ConnectionRefusedError:
-        return False
+def kick(username):
+    # create user object with username
+    user = User(username)
+    session.post(f"{API_URL}/kick", json=user.to_dto())
+
+
+@sio.on("disconnect")
+def disconnect():
+    currentUser.remove()
+
