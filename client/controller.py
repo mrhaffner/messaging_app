@@ -52,6 +52,7 @@ def login(username, password):
 
     #send user DTO through post
     response = session.post(f"{API_URL}/login", json=user.to_dto())
+    print(response)
     # handle repsonse code (success/failure)
     # 200 okay
     if response.status_code != 200:
@@ -67,7 +68,7 @@ def login(username, password):
         return False
 
     #update current user
-    currentUser.add(user, session)
+    currentUser.add(user)
     return True
 
 # accepts message from server
@@ -111,12 +112,19 @@ def send_message(text, receiver):
 
 
 def kick(username):
-    # create user object with username
+    """Kicks a user with the specified username from the chat"""
     user = User(username)
     session.post(f"{API_URL}/kick", json=user.to_dto())
 
 
 @sio.on("disconnect")
 def disconnect():
+    """
+    Removes current user after getting disconnected from SocketIO
+    Resets the session
+    """
+    global session, sio
     currentUser.remove()
+    session = requests.Session()
+    sio = socketio.Client(http_session=session)
 
