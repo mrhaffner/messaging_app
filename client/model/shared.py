@@ -1,8 +1,6 @@
 class SingletonMeta(type):
     """
-    The Singleton class can be implemented in different ways in Python. Some
-    possible methods include: base class, decorator, metaclass. We will use the
-    metaclass because it is best suited for this purpose.
+    Only one instance of this class may exists at a time. 
     
     Source: https://refactoring.guru/design-patterns/singleton/python/example
     """
@@ -22,17 +20,18 @@ class SingletonMeta(type):
 
 class Publisher:
     """
-    This is class is the Publisher in the Pub Sub pattern
-    aka the Observable in the Observer pattern
-    Use the subscribe() method to observe this object for changes
-    Subscribers must implement the publish() method to receive updates
+    A Publisher notifies any of its subscribers when the publish event is called.
+    For the Pub/Sub aka Observer design pattern.
     """
     def __init__(self):
-        self._subscribers = set()
+        """Initializes this Publisher"""
+        self._subscribers = set()  # all objects subscribed to this Publisher
 
     def subscribe(self, subscriber):
+        """Subscribes to this Publisher"""
         self._subscribers.add(subscriber)
 
     def publish(self, obj):
+        """Notifies all subscribers"""
         for subscriber in self._subscribers:
             subscriber.publish(obj)

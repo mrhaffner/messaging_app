@@ -25,11 +25,13 @@ def create_account():
 # create a User session which will allow one to connect via websockets
 @app.route("/login", methods=['POST'])
 def login():
+    print("hi")
     data = request.json
     user_login = User.from_dto(data)
-
+    print(data)
     # first need to check if account exists
     user = users.get_user_by_name(user_login.name)
+    print(user)
     if not user or user.password != user_login.password:
         return "Invalid Credentials", 401
 
@@ -73,7 +75,10 @@ def messageout(message_dto):
 #maybe?
 @socketio.on('disconnect')
 def disconnect():
-    users.remove_by_username(session["username"])
+    user = users.get_user_by_name(session.get('username'))
+    if not user:
+        return
+    user.sid = None
     session.pop("username", None)
     emit('user_change', users.to_dto(), broadcast=True)
 
@@ -85,6 +90,8 @@ def disconnect():
 def connect():
     if session.get('username') is not None:
         user = users.get_user_by_name(session.get('username'))
+        if not user:
+            return False
         user.sid = request.sid
         emit('user_change', users.to_dto(), broadcast=True)
     else:
