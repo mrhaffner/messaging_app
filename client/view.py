@@ -72,16 +72,15 @@ class ChatView(tk.Tk):
 
         controller.send_message(message, user)
         
+    def show_login(self):
+        self.show_frame(self.log_in_page)
+
     def show_create_account(self):
-        # We are not updating anything in the model or using a controller yet,
-        # all we want to do is switch a page
         self.show_frame(self.create_account_page)
 
     def send_new_account(self, user_name, password):
-        controller.create_account(user_name, password)
-        # Still not updating anything on the client side so I am not sure how
-        # to switch frames like it was done in other view methods
-        self.show_frame(self.log_in_page)
+        return controller.create_account(user_name, password)
+            
 
     # TODO: Error handling
     # TODO: Should I do anything about the boolean return value from controller.logout()?
@@ -91,7 +90,7 @@ class ChatView(tk.Tk):
     # TODO: Error handling
     # TODO: Talk about the return type of login and what I should do with it within this method
     def log_in(self, user_name, password):
-        controller.login(user_name, password) # returns a boolean value, not sure if I should be doing anything with that
+        return controller.login(user_name, password)
 
      # TODO: Error handling
     def get_user_list(self):

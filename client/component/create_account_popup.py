@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 
 
 # displays the login form
@@ -29,6 +30,7 @@ class CreateAccountPopup(ttk.Frame):
         self.passwordEntry.insert(0, self.PASSWORD_TEXT)
 
         self.createAccountBtn = tk.Button(self, text="Create Account", command=self._create_account)
+        self.backToLoginBtn = tk.Button(self, text="Back to Login", command=self._show_login)
 
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   GRID CONFIGURATIONS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -37,6 +39,7 @@ class CreateAccountPopup(ttk.Frame):
         self.usernameEntry.pack(pady=10, padx=0)
         self.passwordEntry.pack(pady=10, padx=0)
         self.createAccountBtn.pack(pady=10, padx=0)
+        self.backToLoginBtn.pack(pady=10, padx=0)
 
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   BINDINGS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -52,7 +55,20 @@ class CreateAccountPopup(ttk.Frame):
         password = self.passwordEntry.get()
 
         if (user_name != self.USERNAME_TEXT and password != self.PASSWORD_TEXT):
-            self.view.send_new_account(user_name, password)
+            create_account_response = self.view.send_new_account(user_name, password)
+
+            if create_account_response == 401:
+                messagebox.showerror("Invalid Credentials", "Invalid Username/Password")
+            elif create_account_response == 503:
+                messagebox.showerror("Connection refused", "Server is down")
+            elif create_account_response != 200:
+                messagebox.showerror("Failed to create account", "Error code: " + str(create_account_response))
+            else:
+                self._show_login()
+    
+    def _show_login(self):
+        self._reset_fields()
+        self.view.show_login()
 
     # gets rid of the "Enter text here..." when clicking into the Entry
     def _on_username_entry_click(self, event):
@@ -71,3 +87,10 @@ class CreateAccountPopup(ttk.Frame):
         
         if self.passwordEntry.get() == "":
             self.passwordEntry.insert(0, self.PASSWORD_TEXT)
+
+    #clear and reset fields
+    def _reset_fields(self):
+        self.usernameEntry.delete(0, tk.END)
+        self.usernameEntry.insert(0, self.USERNAME_TEXT)
+        self.passwordEntry.delete(0, tk.END)
+        self.passwordEntry.insert(0, self.PASSWORD_TEXT)

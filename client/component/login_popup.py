@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 
 
 # displays the login form
@@ -51,6 +52,7 @@ class LoginPopup(ttk.Frame):
         self.passwordEntry.bind("<FocusOut>", self._on_focusout) 
     
     def _create_account(self):
+        self._reset_fields()
         self.view.show_create_account()
 
     # TODO: Error handling
@@ -60,11 +62,18 @@ class LoginPopup(ttk.Frame):
         password = self.passwordEntry.get()
 
         if (user_name != self.USERNAME_TEXT and password != self.PASSWORD_TEXT):
-            self.view.log_in(user_name, password)
-            # if view.ChatView.log_in(user_name, password):
-            #     # Switch page to ChatPage
-            #     chat_page = ChatPage
-            #     chat_page.tkraise() 
+            login_response = self.view.log_in(user_name, password)
+
+            #handle login errors, if no errors reset the fields so when a user logs out their
+            #info is not still in the fields
+            if login_response == 401:
+                messagebox.showerror("Invalid Credentials", "Invalid Username/Password")
+            elif login_response == 503:
+                messagebox.showerror("Connection refused", "Server is down")
+            elif login_response != 200:
+                messagebox.showerror("Failed to login", "Error code: " + str(login_response))
+            else:
+                self._reset_fields()
 
     # gets rid of the "Enter text here..." when clicking into the Entry
     def _on_username_entry_click(self, event):
@@ -83,3 +92,10 @@ class LoginPopup(ttk.Frame):
         
         if self.passwordEntry.get() == "":
             self.passwordEntry.insert(0, self.PASSWORD_TEXT)
+
+    #clear and reset fields upon window change
+    def _reset_fields(self):
+        self.usernameEntry.delete(0, tk.END)
+        self.usernameEntry.insert(0, self.USERNAME_TEXT)
+        self.passwordEntry.delete(0, tk.END)
+        self.passwordEntry.insert(0, self.PASSWORD_TEXT)

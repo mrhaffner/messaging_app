@@ -32,14 +32,13 @@ def create_account(username, password):
     user = User(username, password)
 
     #send user DTO through post
-    response = session.post(f"{API_URL}/create_account", json=user.to_dto())
-
-    # handle repsonse code (success/failure)
-    # 200 okay
-    if response.status_code != 200:
-        return False
+    try:
+        response = session.post(f"{API_URL}/create_account", json=user.to_dto())
+    except:
+        #if fails try, server is most likely down
+        return 503
     
-    return True
+    return response.status_code
 
 # sends login POST request to server
 # probably spawns a thread to handle/wait for response
@@ -51,12 +50,14 @@ def login(username, password):
     user = User(username, password)
 
     #send user DTO through post
-    response = session.post(f"{API_URL}/login", json=user.to_dto())
-    print(response)
-    # handle repsonse code (success/failure)
-    # 200 okay
+    try:
+        response = session.post(f"{API_URL}/login", json=user.to_dto())
+    except:
+        #if server is down, the try will fail. Return a 503
+        return 503
+
     if response.status_code != 200:
-        return False
+        return response.status_code
 
     try:
         sio.connect(API_URL)
@@ -65,11 +66,11 @@ def login(username, password):
         # sio.namespace = user.name
     except Exception as e:
         print(e)
-        return False
+        return response.status_code
 
     #update current user
     currentUser.add(user)
-    return True
+    return response.status_code
 
 # accepts message from server
 # adds message to model
