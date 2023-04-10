@@ -53,3 +53,8 @@ class MessageList(Publisher, metaclass=SingletonMeta):
     def get_all(self):
         """Returns a list of all Messages"""
         return self._messages
+    
+    def reset(self):
+        """Removes all Messages from the list"""
+        self._messages = []
+        super().publish(self)  # lets the view know there is an update

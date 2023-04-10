@@ -123,8 +123,5 @@ def disconnect():
     Removes current user after getting disconnected from SocketIO
     Resets the session
     """
-    global session, sio
     currentUser.remove()
-    session = requests.Session()
-    sio = socketio.Client(http_session=session)
-
+    messages.reset()
