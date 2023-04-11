@@ -12,6 +12,9 @@ class LoginPopup(ttk.Frame):
         self.USERNAME_TEXT = "Username"
         self.PASSWORD_TEXT = "Password"
 
+        # set focus on the this window, which means it will capture events such as key presses including escape key events
+        self.focus_set()
+
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   STYLING   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -20,7 +23,7 @@ class LoginPopup(ttk.Frame):
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   WIDGETS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        self.label = tk.Label(self, text="Log In Page", font=('Times', '20'))
+        self.label = tk.Label(self, text="Log In", font=('Times', '20'))
 
         self.usernameEntry = ttk.Entry(self)
         self.usernameEntry.insert(0, self.USERNAME_TEXT)
@@ -28,9 +31,9 @@ class LoginPopup(ttk.Frame):
         self.passwordEntry = ttk.Entry(self, show="*")
         self.passwordEntry.insert(0, self.PASSWORD_TEXT)
 
-        self.logInBtn = tk.Button(self, text="Log In", command=self._log_user_in)
+        self.logInBtn = tk.Button(self, text="Log In", width=5, height=1, command=self._log_user_in)
 
-        self.createAccountBtn = tk.Button(self, text="New Account", command=self._create_account)
+        self.createAccountBtn = tk.Button(self, text="New Account",  width=10, height=1, command=self._create_account)
 
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   GRID CONFIGURATIONS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -38,8 +41,8 @@ class LoginPopup(ttk.Frame):
         self.label.pack(pady=50,padx=0)
         self.usernameEntry.pack(pady=10, padx=0)
         self.passwordEntry.pack(pady=10, padx=0)
-        self.logInBtn.pack(pady=10, padx=0)
-        self.createAccountBtn.pack(pady=10, padx=0)
+        self.logInBtn.pack(side="right", anchor="n", pady=15, padx=(10, 290))
+        self.createAccountBtn.pack(side="left", anchor="n", pady=15, padx=(285, 10))
 
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   BINDINGS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
