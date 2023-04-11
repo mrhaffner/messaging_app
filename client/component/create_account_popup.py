@@ -12,6 +12,9 @@ class CreateAccountPopup(ttk.Frame):
         self.USERNAME_TEXT = "Username"
         self.PASSWORD_TEXT = "Password"
 
+        # set focus on the this window, which means it will capture events such as key presses including escape key events
+        self.focus_set()
+
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   STYLING   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -20,7 +23,7 @@ class CreateAccountPopup(ttk.Frame):
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   WIDGETS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        self.label = tk.Label(self, text="Create Account Page", font=('Times', '20'))
+        self.label = tk.Label(self, text="Create An Account", font=('Times', '20'))
 
         self.usernameEntry = ttk.Entry(self)
         self.usernameEntry.insert(0, self.USERNAME_TEXT)
@@ -29,6 +32,7 @@ class CreateAccountPopup(ttk.Frame):
         self.passwordEntry.insert(0, self.PASSWORD_TEXT)
 
         self.createAccountBtn = tk.Button(self, text="Create Account", command=self._create_account)
+        self.backBtn = tk.Button(self, text="Back", command=self._back_to_login)
 
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   GRID CONFIGURATIONS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -36,7 +40,8 @@ class CreateAccountPopup(ttk.Frame):
         self.label.pack(pady=50,padx=0)
         self.usernameEntry.pack(pady=10, padx=0)
         self.passwordEntry.pack(pady=10, padx=0)
-        self.createAccountBtn.pack(pady=10, padx=0)
+        self.createAccountBtn.pack(side="right", anchor="n", pady=15, padx=(10, 285))
+        self.backBtn.pack(side="left", anchor="n", pady=15, padx=(290, 10))
 
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   BINDINGS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -45,9 +50,17 @@ class CreateAccountPopup(ttk.Frame):
         self.usernameEntry.bind("<FocusIn>", self._on_username_entry_click)
         self.passwordEntry.bind("<FocusIn>", self._on_pw_entry_click) 
         self.usernameEntry.bind("<FocusOut>", self._on_focusout) 
-        self.passwordEntry.bind("<FocusOut>", self._on_focusout) 
+        self.passwordEntry.bind("<FocusOut>", self._on_focusout)
+        self.passwordEntry.bind("<Return>", self._create_account)
+        self.bind("<Escape>", self.escape_key_pressed)
+
+    def _back_to_login(self):
+        self.view.show_login_page()
+
+    def escape_key_pressed(self, event):
+        self._back_to_login()
     
-    def _create_account(self):
+    def _create_account(self, event):
         user_name = self.usernameEntry.get()
         password = self.passwordEntry.get()
 
