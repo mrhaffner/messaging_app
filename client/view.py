@@ -32,6 +32,7 @@ class ChatView(tk.Tk):
         self.title("Messaging Application")
         self.geometry("720x550")
         self.resizable(True, True)
+        self.protocol("WM_DELETE_WINDOW", self._on_close)
 
         # parent will be the top-level widget in the application, which can hold and manage other widgets.
         parent = tk.Frame(self)
@@ -56,6 +57,11 @@ class ChatView(tk.Tk):
 
         # initially show the login page
         self.show_frame(self.log_in_page)
+    
+    # Logs the user out and destroys the application if user hits the exit button at top right of screen
+    def _on_close(self):
+        self.log_out()
+        self.destroy() # destroys the window  
 
     def show_frame(self, frame):
         frame = self.frames[frame]
@@ -76,6 +82,10 @@ class ChatView(tk.Tk):
         # We are not updating anything in the model or using a controller yet,
         # all we want to do is switch a page
         self.show_frame(self.create_account_page)
+    
+    # Method that is used by the back button on the Create Account Page
+    def show_login_page(self):
+        self.show_frame(self.log_in_page)
 
     def send_new_account(self, user_name, password):
         controller.create_account(user_name, password)
@@ -92,6 +102,9 @@ class ChatView(tk.Tk):
     # TODO: Talk about the return type of login and what I should do with it within this method
     def log_in(self, user_name, password):
         controller.login(user_name, password) # returns a boolean value, not sure if I should be doing anything with that
+    
+    def kick_user(self, user_name):
+        controller.kick(user_name)
 
      # TODO: Error handling
     def get_user_list(self):
@@ -101,22 +114,29 @@ class ChatView(tk.Tk):
     def publish(self, publisher):
         chat_page = self.frames[self.chat_page]
         if isinstance(publisher, UserList):
-            # Update user list in chat page
-            chat_page._update_user_listbox(publisher.get_all())
-            chat_page._update_user_dropdown_combobox(publisher.get_all())
+            # if self.current_user._user.name.lower() == "admin":
+            #     # Update user list in chat page but still allows admin to select users from the list box
+            #     chat_page._update_user_listbox_unrestricted(publisher.get_all())
+            # else:
+            #     chat_page._update_user_listbox(publisher.get_all()) # Update user list in chat page
+            chat_page._update_user_listbox_unrestricted(publisher.get_all())
+            chat_page._update_user_dropdown_combobox(publisher.get_all()) # Updates the drop down menu for both regular users and the admin.
         elif isinstance(publisher, CurrentUser):
-            ''' what this is doing in response to the CurrentUser changing
-            is either going to the log in screen or the main window '''
-            # check if there is a current user and if so, then switch the screen to chat page.
+            # Check if there is a CurrentUser and switches the screen to chat page if CurrentUser exists.
             if publisher.exists():
                 self.user_list.current_user = self.current_user._user
                 chat_page._update_current_user_label(self.current_user._user.name)
+
+                if self.current_user._user.name.lower() == 'admin':
+                    chat_page.show_kick_button()
+                
+                # --- showing kick button without admin for debug purposes -----------------------------------------------------------------------
+                print('showing kick button without admin for debug purposes')
+                chat_page.show_kick_button()
+
                 self.show_frame(self.chat_page)
-            # else show the login page
             else: 
                 self.user_list.current_user = None
                 self.show_frame(self.log_in_page)
         elif isinstance(publisher, MessageList):
-            # Update message list in chat page
-            chat_page._update_message_list_entries(publisher.get_all())
-            
+            chat_page._update_message_list_entries(publisher.get_all()) # Update message list in chat page
