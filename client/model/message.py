@@ -6,8 +6,9 @@ from .shared import Publisher, SingletonMeta
 from .user import User
 
 
-@dataclass()
+@dataclass
 class Message:
+    """A message between users"""
     text: str = field(compare=False)
     sender: User = field(compare=False)
     receiver: User = field(compare=False)
@@ -21,10 +22,10 @@ class Message:
     def from_dto(dto):
         """Creates a Message from a serialized message JSON object"""
         message_dict = json.loads(dto)
-        return Message(message_dict['text'], 
-                       User(message_dict['sender']['name']), 
-                       User(message_dict['receiver']['name']), 
-                       message_dict['type'])
+        return Message(message_dict["text"], 
+                       User(message_dict["sender"]["name"]), 
+                       User(message_dict["receiver"]["name"]), 
+                       message_dict["type"])
 
 
 class MessageList(Publisher, metaclass=SingletonMeta):

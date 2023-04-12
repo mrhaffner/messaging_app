@@ -21,7 +21,7 @@ class Message:
         """Creates a Message from a serialized message JSON object"""
         message_dict = json.loads(dto)
         return Message(
-                        message_dict['text'], 
-                        User.from_dto(json.dumps(message_dict['sender'])),
-                        User.from_dto(json.dumps(message_dict['receiver'])),
+                        message_dict["text"], 
+                        User.from_dto(json.dumps(message_dict["sender"])),
+                        User.from_dto(json.dumps(message_dict["receiver"])),
                       )
