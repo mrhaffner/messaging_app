@@ -14,14 +14,14 @@ class User:
     def to_dto(self):
         """Serializes this User to JSON"""
         self_dict = asdict(self)
-        del self_dict['sid']  # server info only
+        del self_dict["sid"]  # server info only
         return json.dumps(asdict(self))
 
     @staticmethod
     def from_dto(dto):
         """Creates a User from a serialized user JSON object"""
         user_dict = json.loads(dto)
-        return User(user_dict['name'], user_dict['password'])
+        return User(user_dict["name"], user_dict["password"])
 
 
 class UserList():
@@ -48,7 +48,7 @@ class UserList():
             raise ValueError("Invalid Username")
         self._users.add(user)
 
-        with open('users.pickle', 'wb') as f:
+        with open("users.pickle", "wb") as f:
             # creates a duplicate list with no session ids - no Users are logged in on startup
             users = UserList()
             users._users = {User(user.name, user.password) for user in self._users}

@@ -19,7 +19,7 @@ class User:
     def from_dto(dto):
         """Creates a User from a serialized user JSON object"""
         user_dict = json.loads(dto)
-        return User(user_dict['name'], user_dict['password'])
+        return User(user_dict["name"], user_dict["password"])
 
 
 class UserList(Publisher, metaclass=SingletonMeta):
