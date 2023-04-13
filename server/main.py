@@ -32,7 +32,8 @@ def login():
     # first need to check if account exists
     user = users.get_user_by_name(user_login.name)
     print(user)
-    if not user or user.password != user_login.password:
+
+    if not user or user.password != user_login.password or user.sid != None:
         return "Invalid Credentials", 401
 
     session['username'] = user_login.name
