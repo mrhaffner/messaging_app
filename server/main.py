@@ -1,8 +1,10 @@
 import pickle
+
 from flask import Flask, request, session
 from flask_socketio import SocketIO, emit
+
 from model.message import Message
-from model.user import UserList, User
+from model.user import User, UserList
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -11,6 +13,7 @@ socketio = SocketIO(app)
 
 @app.route("/create_account", methods=['POST'])
 def create_account():
+    """Handles account creation from client account information json"""
     data = request.json
     new_user = User.from_dto(data)
 

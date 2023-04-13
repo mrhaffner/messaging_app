@@ -73,12 +73,18 @@ class ChatView(tk.Tk):
         controller.send_message(message, user)
         
     def show_login(self):
+        """Switches to login page when no observable needs to be updated"""
         self.show_frame(self.log_in_page)
 
     def show_create_account(self):
+        """Switches to account creation page when no observable needs to be updated"""
         self.show_frame(self.create_account_page)
 
     def send_new_account(self, user_name, password):
+        """
+        Sends a new account to the controller to be sent to server
+        and returns the response
+        """
         return controller.create_account(user_name, password)
             
 
