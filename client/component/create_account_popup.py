@@ -1,34 +1,24 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
+
+from tkinter import ttk, messagebox
 
 
-# displays the login form
 class CreateAccountPopup(ttk.Frame):
+    """Defines functionality of the create account page"""
+
     def __init__(self, parent, container):
-        """
-        Initializes the CreateAccountPopup class.
-        
-        Args:
-            parent (tk.Tk): A reference to the parent ChatView object.
-            container (tk.Frame): A tkinter container in which to place the CreateAccountPopup.
-        """
+        """Initialize this PopUp"""
         super().__init__(container)
 
         self.view = parent
-        # constants
         self.USERNAME_TEXT = "Username"
         self.PASSWORD_TEXT = "Password"
 
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   STYLING   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        
-
-        ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   WIDGETS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        self.label = tk.Label(self, text="Create Account", font=('Times', '20'))
+        self.label = tk.Label(self, text="Create Account", font=("Times", "20"))
+
 
         self.usernameEntry = ttk.Entry(self)
         self.usernameEntry.insert(0, self.USERNAME_TEXT)
@@ -51,13 +41,11 @@ class CreateAccountPopup(ttk.Frame):
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   BINDINGS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        #self.entry.bind("<Return>", self.send_message) # binds hitting the enter key to the send_message() event handler
         self.usernameEntry.bind("<FocusIn>", self._on_username_entry_click)
         self.passwordEntry.bind("<FocusIn>", self._on_pw_entry_click) 
         self.usernameEntry.bind("<FocusOut>", self._on_focusout) 
         self.passwordEntry.bind("<FocusOut>", self._on_focusout) 
     
-
     def _create_account(self):
         """
         Validates the provided username and password, and attempts to create a new account.
@@ -78,44 +66,28 @@ class CreateAccountPopup(ttk.Frame):
             else:
                 self._show_login()
     
-
     def _show_login(self):
-        """
-        Resets the fields and returns to the login screen.
-        """
+        """When the back to login button is pushed, reset the fields and show the page"""
         self._reset_fields()
         self.view.show_login()
 
-
     def _on_username_entry_click(self, event):
-        """
-        Event handler for the <FocusIn> event on the username entry.
-        Removes the placeholder text when the user clicks on the entry.
-        """
+        """Clear text in username field if it is the initial text"""
         if self.usernameEntry.get() == self.USERNAME_TEXT:
             self.usernameEntry.delete(0, "end")
 
-
     def _on_pw_entry_click(self, event):
-        """
-        Event handler for the <FocusIn> event on the password entry.
-        Removes the placeholder text when the user clicks on the entry.
-        """
+        """Clear text in password field if it is the initial text"""
         if self.passwordEntry.get() == self.PASSWORD_TEXT:
             self.passwordEntry.delete(0, "end")
 
-
     def _on_focusout(self, event):
-        """
-        Event handler for the <FocusOut> event on the username and password entries.
-        Reinserts the placeholder text when the user clicks outside of the entry.
-        """
+        """Brings back initial text if user clicks out after nothing is entered"""
         if self.usernameEntry.get() == "":
             self.usernameEntry.insert(0, self.USERNAME_TEXT)
         
         if self.passwordEntry.get() == "":
             self.passwordEntry.insert(0, self.PASSWORD_TEXT)
-
 
     def _reset_fields(self):
         """

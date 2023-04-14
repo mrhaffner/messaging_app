@@ -1,20 +1,12 @@
-# subscribes to changes in the model ie pub/sub aka observer pattern
-# contains state about what is currently being displayed on the screen
-# ie if you are connected/disconnected
-# contains the model instances:
-#   UserList singleton
-#   MessageList singleton
-#   current User (should indicate if there is none aka not logged in)
-# displays the components
-# buttons in the components generally call methods in the controller
-
+import controller
 import tkinter as tk
+
 from component.main_window import ChatPage
 from component.login_popup import LoginPopup
 from component.create_account_popup import CreateAccountPopup
 from model.user import CurrentUser, User, UserList
 from model.message import MessageList
-import controller
+
 
 class ChatView(tk.Tk):
     """
@@ -22,16 +14,18 @@ class ChatView(tk.Tk):
     It manages the display and interactions for chat, login and account creation components.
     ChatView also subscribes to changes in the model classes and updates the UI accordingly.
     """
+
     def __init__(self):
         """
-        Initializes the ChatView class, which is the main application window for the messaging application.
-        Sets up the frames, subscribes to the models, configures the window properties, and initializes the UI components.
+        Initializes the ChatView class, which is the main application window for the messaging 
+        application. Sets up the frames, subscribes to the models, configures the window
+        properties, and initializes the UI components.
         """
         super().__init__()
 
-        self.current_user = CurrentUser() # Instantiates CurrentUser singleton
-        self.message_list = MessageList() # Instantiates MessageList singleton
-        self.user_list = UserList() # Instantiates UserList singleton
+        self.current_user = CurrentUser()  # Instantiates CurrentUser singleton
+        self.message_list = MessageList()  # Instantiates MessageList singleton
+        self.user_list = UserList()  # Instantiates UserList singleton
         
         # Subscribe ChatView to UserList's updates for displaying changes in the list of users
         self.user_list.subscribe(self)
@@ -49,7 +43,7 @@ class ChatView(tk.Tk):
         # Bind the closing of the application window to the _on_close method
         self.protocol("WM_DELETE_WINDOW", self._on_close)
 
-        # parent will be the top-level widget in the application, which can hold and manage other widgets.
+        # top-level widget in the application, which can hold and manage other widgets.
         parent = tk.Frame(self)
         parent.pack(side="top", fill="both", expand=True)
         parent.grid_rowconfigure(0, weight=1)
@@ -74,11 +68,10 @@ class ChatView(tk.Tk):
         # initially show the login page
         self.show_frame(self.log_in_page)
 
-
     def _on_close(self):
         """
-        Handles the event when the user clicks the exit button on the top right corner of the window.
-        Logs the user out and destroys the application.
+        Handles the event when the user clicks the exit button on the top right corner of the 
+        window. Logs the user out and destroys the application.
         """
         self.log_out()
         self.destroy()
@@ -94,95 +87,58 @@ class ChatView(tk.Tk):
         frame = self.frames[frame]
         frame.tkraise()
 
-
     def send_message(self, message, username):
         """
         Sends a message to the specified user or group.
-
-        Args:
-            message (str): The message to be sent.
-            username (str): The recipient's username or "group" for a group message.
         """
         if username == "":
             return
         elif username == "group":
             user = User("group")
         else:
-            user = self.user_list.get_by_name(username) # returns user or None
+            user = self.user_list.get_by_name(username)  # returns user or None
 
         controller.send_message(message, user)
-
 
     def show_login(self):
         """Shows the login frame."""
         self.show_frame(self.log_in_page)
 
-
     def show_create_account(self):
-        """Shows the create account frame."""
+        """Switches to account creation page when no observable needs to be updated"""
         self.show_frame(self.create_account_page)
-
 
     def send_new_account(self, user_name, password):
         """
-        Sends a request to create a new account with the given username and password.
-
-        Args:
-            user_name (str): The desired username for the new account.
-            password (str): The desired password for the new account.
-
-        Returns:
-            bool: True if the account was successfully created, False otherwise.
+        Sends a new account to the controller to be sent to server
+        and returns the response
         """
         return controller.create_account(user_name, password)
-      
 
     def log_out(self):
         """Logs the current user out."""
         controller.logout()
 
-
     def log_in(self, user_name, password):
         """
         Sends a request to the controller to log in with the given username and password.
-
-        Args:
-            user_name (str): The username of the account to log in.
-            password (str): The password of the account to log in.
-
-        Returns:
-            bool: True if the login was successful, False otherwise.
         """
         return controller.login(user_name, password)
-
 
     def kick_user(self, user_name):
         """
         Sends a request to kick a user with the given username.
-
-        Args:
-            user_name (str): The username of the user to be kicked.
         """
         controller.kick(user_name)
-
 
     def get_user_list(self):
         """
         Retrieves the list of all users.
-
-        Returns:
-            list: A list of all users.
         """
         return self.user_list.get_all()
 
-
     def publish(self, publisher):
-        """
-        Updates the view based on the changes in the publisher's state.
-
-        Args:
-            publisher (object): An instance of a model class (UserList, CurrentUser, or MessageList) with updated state.
-        """
+        """Updates the view based on the changes in the publisher's state."""
         chat_page = self.frames[self.chat_page]
         if isinstance(publisher, UserList):
             # Update user list in chat page

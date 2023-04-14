@@ -1,8 +1,10 @@
 import pickle
+
 from flask import Flask, request, session
 from flask_socketio import SocketIO, emit
+
 from model.message import Message
-from model.user import UserList, User
+from model.user import User, UserList
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -11,6 +13,7 @@ socketio = SocketIO(app)
 
 @app.route("/create_account", methods=['POST'])
 def create_account():
+    """Handles account creation from client account information json"""
     data = request.json
     new_user = User.from_dto(data)
 
@@ -21,17 +24,13 @@ def create_account():
 
     return "Success", 200
 
-# login route - http POST
-# create a User session which will allow one to connect via websockets
+
 @app.route("/login", methods=['POST'])
 def login():
-    print("hi")
+    """Handles user login from client account information json"""
     data = request.json
     user_login = User.from_dto(data)
-    print(data)
-    # first need to check if account exists
-    user = users.get_user_by_name(user_login.name)
-    print(user)
+    user = users.get_user_by_name(user_login.name)  # first need to check if account exists
 
     if not user or user.password != user_login.password or user.sid != None:
         return "Invalid Credentials", 401
