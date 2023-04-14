@@ -4,6 +4,7 @@ import socketio
 from model.message import Message, MessageList
 from model.user import CurrentUser, User, UserList
 
+
 API_URL = "http://127.0.0.1:5000"  # URL to connect to server on
 session = requests.Session()  # Using this session from request library
 sio = socketio.Client(http_session=session)  # Connect and disconnect over this socket

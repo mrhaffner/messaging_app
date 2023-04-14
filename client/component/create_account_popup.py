@@ -6,6 +6,7 @@ class CreateAccountPopup(ttk.Frame):
     """Defines functionality of the create account page"""
 
     def __init__(self, parent, container):
+        """Initialize this PopUp"""
         super().__init__(container)
 
         self.view = parent
@@ -15,7 +16,7 @@ class CreateAccountPopup(ttk.Frame):
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   WIDGETS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        self.label = tk.Label(self, text="Create Account Page", font=('Times', '20'))
+        self.label = tk.Label(self, text="Create Account Page", font=("Times", "20"))
 
         self.usernameEntry = ttk.Entry(self)
         self.usernameEntry.insert(0, self.USERNAME_TEXT)
