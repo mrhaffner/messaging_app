@@ -1,11 +1,13 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
+
+from tkinter import messagebox, ttk
 
 
-# displays the login form
 class LoginPopup(ttk.Frame):
+    """Defines functionality of the login page"""
+
     def __init__(self, parent, container):
+        """Initialize this PopUp"""
         super().__init__(container)
 
         self.view = parent
@@ -14,14 +16,9 @@ class LoginPopup(ttk.Frame):
         self.PASSWORD_TEXT = "Password"
 
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   STYLING   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        
-
-        ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   WIDGETS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        self.label = tk.Label(self, text="Log In Page", font=('Times', '20'))
+        self.label = tk.Label(self, text="Log In", font=('Times', '20'))
 
         self.usernameEntry = ttk.Entry(self)
         self.usernameEntry.insert(0, self.USERNAME_TEXT)
@@ -45,19 +42,18 @@ class LoginPopup(ttk.Frame):
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   BINDINGS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        #self.entry.bind("<Return>", self.send_message) # binds hitting the enter key to the send_message() event handler
         self.usernameEntry.bind("<FocusIn>", self._on_username_entry_click)
         self.passwordEntry.bind("<FocusIn>", self._on_pw_entry_click) 
         self.usernameEntry.bind("<FocusOut>", self._on_focusout) 
         self.passwordEntry.bind("<FocusOut>", self._on_focusout) 
     
     def _create_account(self):
+        """Create an account"""
         self._reset_fields()
         self.view.show_create_account()
 
-    # TODO: Error handling
-    # logs the user in after the button is clicked 
     def _log_user_in(self):
+        """Logs user in"""
         user_name = self.usernameEntry.get()
         password = self.passwordEntry.get()
 
@@ -75,26 +71,26 @@ class LoginPopup(ttk.Frame):
             else:
                 self._reset_fields()
 
-    # gets rid of the "Enter text here..." when clicking into the Entry
     def _on_username_entry_click(self, event):
+        """Gets rid of the "Enter text here..." when clicking into the Entry"""
         if self.usernameEntry.get() == self.USERNAME_TEXT:
             self.usernameEntry.delete(0, "end")
 
-    # gets rid of the "Enter text here..." when clicking into the Entry
     def _on_pw_entry_click(self, event):
+        """Gets rid of the "Enter text here..." when clicking into the Entry"""
         if self.passwordEntry.get() == self.PASSWORD_TEXT:
             self.passwordEntry.delete(0, "end")
 
-    # brings back the "Enter text here..." when clicking off of the Entry
     def _on_focusout(self, event):
+        """Brings back the "Enter text here..." when clicking off of the Entry"""
         if self.usernameEntry.get() == "":
             self.usernameEntry.insert(0, self.USERNAME_TEXT)
         
         if self.passwordEntry.get() == "":
             self.passwordEntry.insert(0, self.PASSWORD_TEXT)
 
-    #clear and reset fields upon window change
     def _reset_fields(self):
+        """Clear and reset fields upon window change"""
         self.usernameEntry.delete(0, tk.END)
         self.usernameEntry.insert(0, self.USERNAME_TEXT)
         self.passwordEntry.delete(0, tk.END)

@@ -1,4 +1,5 @@
 import tkinter as tk
+
 from tkinter import ttk, messagebox
 
 
@@ -16,7 +17,8 @@ class CreateAccountPopup(ttk.Frame):
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   WIDGETS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        self.label = tk.Label(self, text="Create Account Page", font=("Times", "20"))
+        self.label = tk.Label(self, text="Create Account", font=("Times", "20"))
+
 
         self.usernameEntry = ttk.Entry(self)
         self.usernameEntry.insert(0, self.USERNAME_TEXT)
@@ -46,10 +48,8 @@ class CreateAccountPopup(ttk.Frame):
     
     def _create_account(self):
         """
-        When the create account button is pushed, get the username and password
-        from the text fields, and send the information through the view, controller,
-        then server. Based on the response, can either log in or show an error
-        message.
+        Validates the provided username and password, and attempts to create a new account.
+        Displays error messages if any issues arise during account creation.
         """
         user_name = self.usernameEntry.get()
         password = self.passwordEntry.get()
@@ -90,7 +90,9 @@ class CreateAccountPopup(ttk.Frame):
             self.passwordEntry.insert(0, self.PASSWORD_TEXT)
 
     def _reset_fields(self):
-        """Helper function to clear everything in fields and reset them"""
+        """
+        Clears and resets the username and password fields to their default placeholder text.
+        """
         self.usernameEntry.delete(0, tk.END)
         self.usernameEntry.insert(0, self.USERNAME_TEXT)
         self.passwordEntry.delete(0, tk.END)
