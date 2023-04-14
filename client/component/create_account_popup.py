@@ -6,6 +6,13 @@ from tkinter import messagebox
 # displays the login form
 class CreateAccountPopup(ttk.Frame):
     def __init__(self, parent, container):
+        """
+        Initializes the CreateAccountPopup class.
+        
+        Args:
+            parent (tk.Tk): A reference to the parent ChatView object.
+            container (tk.Frame): A tkinter container in which to place the CreateAccountPopup.
+        """
         super().__init__(container)
 
         self.view = parent
@@ -21,7 +28,7 @@ class CreateAccountPopup(ttk.Frame):
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   WIDGETS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-        self.label = tk.Label(self, text="Create Account Page", font=('Times', '20'))
+        self.label = tk.Label(self, text="Create Account", font=('Times', '20'))
 
         self.usernameEntry = ttk.Entry(self)
         self.usernameEntry.insert(0, self.USERNAME_TEXT)
@@ -50,7 +57,12 @@ class CreateAccountPopup(ttk.Frame):
         self.usernameEntry.bind("<FocusOut>", self._on_focusout) 
         self.passwordEntry.bind("<FocusOut>", self._on_focusout) 
     
+
     def _create_account(self):
+        """
+        Validates the provided username and password, and attempts to create a new account.
+        Displays error messages if any issues arise during account creation.
+        """
         user_name = self.usernameEntry.get()
         password = self.passwordEntry.get()
 
@@ -66,30 +78,49 @@ class CreateAccountPopup(ttk.Frame):
             else:
                 self._show_login()
     
+
     def _show_login(self):
+        """
+        Resets the fields and returns to the login screen.
+        """
         self._reset_fields()
         self.view.show_login()
 
-    # gets rid of the "Enter text here..." when clicking into the Entry
+
     def _on_username_entry_click(self, event):
+        """
+        Event handler for the <FocusIn> event on the username entry.
+        Removes the placeholder text when the user clicks on the entry.
+        """
         if self.usernameEntry.get() == self.USERNAME_TEXT:
             self.usernameEntry.delete(0, "end")
 
-    # gets rid of the "Enter text here..." when clicking into the Entry
+
     def _on_pw_entry_click(self, event):
+        """
+        Event handler for the <FocusIn> event on the password entry.
+        Removes the placeholder text when the user clicks on the entry.
+        """
         if self.passwordEntry.get() == self.PASSWORD_TEXT:
             self.passwordEntry.delete(0, "end")
 
-    # brings back the "Enter text here..." when clicking off of the Entry
+
     def _on_focusout(self, event):
+        """
+        Event handler for the <FocusOut> event on the username and password entries.
+        Reinserts the placeholder text when the user clicks outside of the entry.
+        """
         if self.usernameEntry.get() == "":
             self.usernameEntry.insert(0, self.USERNAME_TEXT)
         
         if self.passwordEntry.get() == "":
             self.passwordEntry.insert(0, self.PASSWORD_TEXT)
 
-    #clear and reset fields
+
     def _reset_fields(self):
+        """
+        Clears and resets the username and password fields to their default placeholder text.
+        """
         self.usernameEntry.delete(0, tk.END)
         self.usernameEntry.insert(0, self.USERNAME_TEXT)
         self.passwordEntry.delete(0, tk.END)
