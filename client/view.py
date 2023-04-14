@@ -16,6 +16,7 @@ from model.user import CurrentUser, User, UserList
 from model.message import MessageList
 import controller
 
+
 class ChatView(tk.Tk):
 
     def __init__(self):
@@ -61,14 +62,13 @@ class ChatView(tk.Tk):
         frame = self.frames[frame]
         frame.tkraise()
     
-    # TODO: Error handling
     def send_message(self, message, username):
         if username == "":
             return
         elif username == "group":
             user = User("group")
         else:
-            user = self.user_list.get_by_name(username) # returns user or None
+            user = self.user_list.get_by_name(username)  # returns user or None
 
         controller.send_message(message, user)
         
@@ -87,18 +87,12 @@ class ChatView(tk.Tk):
         """
         return controller.create_account(user_name, password)
             
-
-    # TODO: Error handling
-    # TODO: Should I do anything about the boolean return value from controller.logout()?
     def log_out(self):
         controller.logout()
     
-    # TODO: Error handling
-    # TODO: Talk about the return type of login and what I should do with it within this method
     def log_in(self, user_name, password):
         return controller.login(user_name, password)
 
-     # TODO: Error handling
     def get_user_list(self):
         return self.user_list.get_all()
 

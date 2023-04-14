@@ -4,12 +4,13 @@ import socketio
 from model.message import Message, MessageList
 from model.user import CurrentUser, User, UserList
 
-API_URL = "http://127.0.0.1:5000"
-session = requests.Session()
-sio = socketio.Client(http_session=session)
-currentUser = CurrentUser()
-users = UserList()
-messages = MessageList()
+API_URL = "http://127.0.0.1:5000"  # URL to connect to server on
+session = requests.Session()  # Using this session from request library
+sio = socketio.Client(http_session=session)  # Connect and disconnect over this socket
+currentUser = CurrentUser()  # The user on this client
+users = UserList()  # The list of all users
+messages = MessageList()  # The list of all messages
+
 
 def create_account(username, password):
     """
@@ -25,6 +26,7 @@ def create_account(username, password):
     
     return response.status_code
 
+
 def login(username, password):
     """
     Creates a user given a username and password and attempts to send it to
@@ -38,7 +40,7 @@ def login(username, password):
     except:
         return 503
 
-    if response.status_code != 200: #dont try and connect via socket if login failed
+    if response.status_code != 200:  # dont try and connect via socket if login failed
         return response.status_code
 
     try:
@@ -49,31 +51,36 @@ def login(username, password):
     currentUser.add(user)
     return response.status_code
 
+
 def logout():
     """Disconnects the socket upon logging out"""
     sio.disconnect()
     return True
+
+
+def send_message(text, receiver):
+    """Handles sending messages to server"""
+    if text != "" or receiver.name != "":  # message or receiver cannot be empty
+        sio.emit('message_out', Message(text, currentUser._user, receiver).to_dto())
+
+
+def kick(username):
+    """Kicks a user with the specified username from the chat"""
+    user = User(username)
+    session.post(f"{API_URL}/kick", json=user.to_dto())
+
 
 @sio.on("message_out")
 def message_in(message_dto):
     """Handles message DTO coming in from server"""
     messages.add(Message.from_dto(message_dto))
 
-def send_message(text, receiver):
-    """Handles sending messages to server"""
-    if text != "" or receiver.name != "": #message or receiver cannot be empty
-        sio.emit('message_out', Message(text, currentUser._user, receiver).to_dto())
 
 @sio.on("user_change")
 def user_change(user_list_dto):
     """Updates the user list when someone logs out or logs in"""
     users.remove_all_users()
     users.add_many_from_dtos(user_list_dto)
-
-def kick(username):
-    """Kicks a user with the specified username from the chat"""
-    user = User(username)
-    session.post(f"{API_URL}/kick", json=user.to_dto())
 
 
 @sio.on("disconnect")

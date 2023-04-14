@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 
+
 class CreateAccountPopup(ttk.Frame):
     """Defines functionality of the create account page"""
 
