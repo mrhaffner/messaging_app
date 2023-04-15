@@ -13,6 +13,38 @@ Features:
 - Admin super user may kick users from chat
 - GUI displays a list of all logged in users
 
+
+## Contents
+
+├── README.md  (you are here)
+├── presentation.pptx  (slides for our project presentation)
+├── writeup.docx  (our project write up)
+├── client  (the client application - MVC architecture)
+│   ├── component  (GUI components)
+│   │   ├── __init__.py  (denotes a Python package)
+│   │   ├── create_account_popup.py  (create account page)
+│   │   ├── login_popup.py  (login page)
+│   │   └── main_window.py  (main page)
+│   ├── controller.py  (the client controller)
+│   ├── main.py  (entry to the app)
+│   ├── model  (the models used)
+│   │   ├── __init__.py  (denotes a Python package)
+│   │   ├── message.py  (models related to messages)
+│   │   ├── shared.py  (shared parent classes)
+│   │   └── user.py  (models related to the user)
+│   └── view.py  (the client view)
+├── prototype  (the prototype used when designing this project)
+│   ├── README.md  (original readme)
+│   ├── client.py  (client prototype)
+│   └── server.py  (server prototype)
+├── requirements.txt  (use this to install needed python packages)
+└── server  (the server application)
+    ├── main.py  (the server entry point)
+    └── model  (the models used)
+        ├── __init__.py  (denotes a Python package)
+        ├── message.py  (models related to messages)
+        └── user.py  (models related to the user)
+
 ## Set Up
 
 ### For Windows
