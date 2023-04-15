@@ -1,7 +1,7 @@
 import pickle
 
 from flask import Flask, request, session
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, disconnect
 
 from model.message import Message
 from model.user import User, UserList
@@ -38,26 +38,21 @@ def login():
     session['username'] = user_login.name
     return "Success", 200
 
-
-# logout route - http POST
-# emits to "user_change" event
-# @app.route("/logout", methods=['POST'])
-# def logout():
-#     users.remove_by_username(session["username"])
-#     session.pop("username", None)
-#     emit('user_change', users.to_dto(), broadcast=True)
-#     return "Success", 200
-
-
-
-# socketio "message_out" event to handle messages
-# emits based on "sender/receiver" field
-# "group" receiver is emitted to everyone
-# otherwise the message is emitted only to the sender (for confirmation) AND receiver
-# emits to "message_in" event
+@app.route("/kick", methods=['POST'])
+def kick(user):
+    '''Kicks the supplied user'''
+    user = users.get_user_by_name(user.name)
+    disconnect(user.sid)
 
 @socketio.on('message_out')
 def messageout(message_dto):
+    '''
+     socketio "message_out" event to handle messages
+     emits based on "sender/receiver" field
+     "group" receiver is emitted to everyone
+     otherwise the message is emitted only to the sender (for confirmation) AND receiver
+     emits to "message_in" event
+    '''
     message = Message.from_dto(message_dto)
     if message.receiver.name == "group":
         message.type = "PM"
@@ -70,11 +65,12 @@ def messageout(message_dto):
         emit('message_out', message.to_dto(), room=sender_sid)
     
 
-# needs to handle when a User disconnects from SocketIO (seperate from logout)
-# emits to "user_change" event
-#maybe?
 @socketio.on('disconnect')
-def disconnect():
+def on_disconnect():
+    '''
+     needs to handle when a User disconnects from SocketIO (seperate from logout)
+     emits to "user_change" event
+    '''
     user = users.get_user_by_name(session.get('username'))
     if not user:
         return
@@ -83,11 +79,14 @@ def disconnect():
     emit('user_change', users.to_dto(), broadcast=True)
 
 
-# needs to handle when a User first connects via SocketIO
-# emits to "user_change" event for all UserList
-# cannot connect if does not have a session gained from login route
+
 @socketio.on('connect')
 def connect():
+    '''
+     needs to handle when a User first connects via SocketIO
+     emits to "user_change" event for all UserList
+     cannot connect if does not have a session gained from login route
+    '''
     if session.get('username') is not None:
         user = users.get_user_by_name(session.get('username'))
         if not user:
@@ -106,6 +105,9 @@ if __name__ == "__main__":
     #create empty file if cannot read file for whatever reason
         with open('users.pickle', 'wb') as f:
             users = UserList()
+            admin = User(name="admin", password="admin")
+            users.add(admin)
             pickle.dump(users, f)
+
 
     socketio.run(app)
