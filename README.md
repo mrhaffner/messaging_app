@@ -13,9 +13,9 @@ Features:
 - Admin super user may kick users from chat
 - GUI displays a list of all logged in users
 
-
 ## Contents
 
+```
 ├── README.md  (you are here)
 ├── presentation.pptx  (slides for our project presentation)
 ├── writeup.docx  (our project write up)
@@ -44,37 +44,9 @@ Features:
         ├── __init__.py  (denotes a Python package)
         ├── message.py  (models related to messages)
         └── user.py  (models related to the user)
+```
 
 ## Set Up
-
-### For Windows
-
-Install Python (author is using 3.9)
-
-Create/activate a virtual environment so you are not installing packages globally (optional):
-
-```sh
-$ py -m venv env
-$ source env/Scripts/activate
-```
-
-Install the required packages
-
-```sh
-$ pip install -r requirements.txt
-```
-
-Run the server:
-
-```sh
-$ python server/main.py
-```
-
-Run as many clients as you'd like:
-
-```sh
-$ python client/main.py.py
-```
 
 ### For Linux/Mac
 
@@ -87,10 +59,14 @@ $ python3 -m venv env
 $ source env/bin/activate
 ```
 
-Install the required packages
+Install the required packages (assuming python 3.6 for the university computers)
 
 ```sh
-$ pip install -r requirements.txt
+$ sudo apt-get install python3.6-tk
+$ pip install requests
+$ pip install flask
+$ pip install flask-socketio
+$ pip install "python-socketio[client]"
 ```
 
 Run the server:
