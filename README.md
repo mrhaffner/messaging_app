@@ -37,7 +37,6 @@ Features:
 │   ├── README.md  (original readme)
 │   ├── client.py  (client prototype)
 │   └── server.py  (server prototype)
-├── requirements.txt  (use this to install needed python packages)
 └── server  (the server application)
     ├── main.py  (the server entry point)
     └── model  (the models used)
