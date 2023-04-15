@@ -93,6 +93,9 @@ class ChatPage(ttk.Frame):
         # Disable the list box
         self.online_users_listbox.config(state='disabled')
 
+        # Disable chat box
+        self.chatbox_scrolled_text.config(state="disabled")
+
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~   BINDINGS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
         ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
@@ -155,7 +158,7 @@ class ChatPage(ttk.Frame):
         self.online_users_listbox.delete(0, tk.END)
         for user in users:
             self.online_users_listbox.insert(tk.END, user.name)
-        if self.parent.current_user._user.name != "admin":
+        if self.parent.current_user._user is not None and self.parent.current_user._user.name != "admin":
             self.online_users_listbox.config(state="disabled")
 
     def _update_user_dropdown_combobox(self, users):
